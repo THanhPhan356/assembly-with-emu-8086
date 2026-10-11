@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An 8086 study guide covering architecture, registers, segmented memory, flags, addressing modes, assembly examples and worked exercises.">
+  <title>8086 Fundamentals · Microprocessor Study Guide</title>
+  <style>
+:root { --paper:#fff; --surface:#fff; --ink:#202a2a; --muted:#526060; --line:#d8ded9; --accent:#184b87; --soft:#f1f5fa; --warn:#7b4b18; --warn-bg:#fff4e2; --code:#f4f5f7; }
+    * { box-sizing:border-box; }
+    [hidden] { display:none !important; }
+    html { scroll-behavior:smooth; scroll-padding-top:1.5rem; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.75 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.2em; }
+    a:hover { text-decoration-thickness:2px; }
+    :focus-visible { outline:3px solid var(--accent); outline-offset:4px; }
+    .skip { position:absolute; top:-5rem; left:1rem; background:var(--surface); padding:.5rem 1rem; z-index:5; }
+    .skip:focus { top:1rem; }
+    .layout { max-width:1320px; margin:auto; display:grid; grid-template-columns:264px minmax(0,1fr); }
+    aside { padding:2rem 1.5rem; border-right:1px solid var(--line); }
+    .sidebar { position:sticky; top:1.5rem; max-height:calc(100vh - 3rem); overflow:auto; }
+    .brand { display:block; color:var(--ink); font-weight:750; font-size:1rem; letter-spacing:.02em; margin-bottom:.25rem; }
+    .small { font-size:.85rem; color:var(--muted); }
+    nav ol { padding:0; list-style:none; margin:1.5rem 0; }
+    nav a { display:block; padding:.45rem 0; font-size:.9rem; text-decoration:none; }
+    nav a:hover { text-decoration:underline; }
+    main { min-width:0; padding:2rem 2.5rem 4rem; }
+    header { padding-bottom:2rem; border-bottom:1px solid var(--line); }
+    .eyebrow { font-size:.8rem; color:var(--accent); letter-spacing:.12em; font-weight:700; text-transform:uppercase; }
+    h1 { margin:.5rem 0 1rem; font-size:clamp(1.75rem,3vw,2.3rem); line-height:1.3; letter-spacing:-.04em; max-width:820px; }
+    .lead { font-size:1.1rem; color:var(--muted); max-width:760px; }
+    .actions { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:1.5rem; align-items:center; }
+    button,.button { display:inline-block; border:1px solid var(--accent); border-radius:4px; padding:.6rem 1rem; font:inherit; font-size:.9rem; cursor:pointer; color:var(--accent); background:var(--surface); text-decoration:none; }
+    button:hover,.button:hover { background:var(--soft); }
+    section { padding-top:2.5rem; }
+    h2 { margin:0 0 .75rem; font-size:1.65rem; line-height:1.3; letter-spacing:-.025em; }
+    h3 { font-size:1.15rem; margin:1.75rem 0 .5rem; line-height:1.4; }
+    h4 { font-size:1rem; margin:1.25rem 0 .5rem; }
+    p { margin:.75rem 0; }
+    ul,ol { padding-left:1.5rem; }
+    li { margin:.35rem 0; }
+    .note { padding:1rem 1.25rem; border-left:3px solid var(--accent); background:var(--soft); margin:1.25rem 0; }
+    .note p:first-child { margin-top:0; }
+    .note p:last-child { margin-bottom:0; }
+    .warning { background:var(--warn-bg); border-color:var(--warn); }
+    .formula { padding:1rem; background:var(--soft); text-align:center; font-weight:650; overflow-wrap:anywhere; }
+    .table-wrap { max-width:100%; overflow-x:auto; margin:1rem 0; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.93rem; }
+    caption { text-align:left; color:var(--muted); font-size:.85rem; padding-bottom:.5rem; }
+    th,td { padding:.65rem .85rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:var(--soft); font-weight:650; }
+    code { font: .9em/1.5 Consolas,"Cascadia Code",monospace; background:#e8ede8; padding:.1em .25em; border-radius:3px; overflow-wrap:anywhere; }
+    pre { padding:1.25rem; background:var(--code); color:#202a2a; overflow-x:auto; border-radius:4px; font-size:.9rem; line-height:1.65; }
+    pre code { background:transparent; color:inherit; padding:0; overflow-wrap:normal; }
+    figure { margin:1.25rem 0; }
+    figcaption { font-size:.85rem; color:var(--muted); margin-top:.5rem; }
+    .flow { display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; padding:1.25rem; border:1px solid var(--line); background:var(--surface); }
+    .flow .block { padding:.5rem .75rem; border:1px solid var(--line); flex:1; min-width:150px; }
+    .flow strong,.flow small { display:block; }
+    .flow small { color:var(--muted); }
+    details { margin:.75rem 0; padding:.75rem 1rem; background:var(--surface); border:1px solid var(--line); border-radius:4px; }
+    summary { cursor:pointer; font-weight:600; }
+    details[open] summary { padding-bottom:.5rem; border-bottom:1px solid var(--line); }
+    details.toc { border:0; padding:0; margin:0; background:transparent; }
+    details.toc>summary { display:none; }
+    .lab { border:1px solid var(--line); padding:1.25rem; margin:1.5rem 0; background:var(--surface); }
+    .lab h3 { margin-top:0; }
+    .inputs { display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end; }
+    label { display:block; font-size:.9rem; font-weight:600; }
+    input,select { width:100%; max-width:220px; margin-top:.35rem; padding:.6rem; border:1px solid #879890; border-radius:3px; background:var(--surface); color:var(--ink); font:inherit; }
+    output { display:block; white-space:pre-wrap; padding:1rem; margin-top:1rem; background:var(--soft); font-size:.95rem; overflow-wrap:anywhere; }
+    fieldset { margin:1rem 0; border:1px solid var(--line); padding:.75rem 1rem; }
+    legend { padding:0 .25rem; font-weight:600; }
+    fieldset label { display:flex; gap:.5rem; align-items:baseline; margin:.5rem 0; font-weight:400; }
+    input[type=radio] { width:auto; max-width:none; margin:0; }
+    footer { margin-top:3rem; border-top:1px solid var(--line); padding-top:1rem; font-size:.85rem; color:var(--muted); }
+    noscript { display:block; padding:1rem; background:var(--warn-bg); }
+    @media (max-width:1024px) { main { padding:2rem; } .layout { grid-template-columns:230px minmax(0,1fr); } }
+    @media (max-width:768px) { .layout { display:block; } aside { border-right:0; border-bottom:1px solid var(--line); padding:1.25rem; } .sidebar { position:static; max-height:none; } details.toc>summary { display:list-item; margin-top:.75rem; font-size:.9rem; } nav ol { display:grid; grid-template-columns:1fr 1fr; gap:0 .75rem; margin:.75rem 0 0; } main { padding:2rem 1.25rem 3rem; } }
+    @media (max-width:400px) { body { font-size:16px; } nav ol { grid-template-columns:1fr; } main { padding:1.5rem 1rem; } .lab { padding:1rem; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+    @media print { body { background:white; font-size:11pt; } .layout { display:block; } aside,.actions,.interactive,noscript,.skip { display:none; } main { padding:0; } section { padding-top:1.5rem; } h2,h3,summary { break-after:avoid; } pre,figure,tr { break-inside:avoid; } pre { white-space:pre-wrap; background:#f3f3f3; color:#111; } a { color:inherit; } details { border:0; padding:0; } details> :not(summary) { display:block !important; } .table-wrap { overflow:visible; } }
+  
+.source-note { color:var(--muted); font-size:.85rem; margin-top:1.5rem; }
+.register-layout td { text-align:center; font-family:Consolas,monospace; }
+.references li { margin-bottom:1rem; }
+
+</style>
+</head>
+<body>
+<a class="skip" href="#noi-dung">Skip to the chapter</a>
+<div class="layout">
+  <aside><div class="sidebar">
+    <span class="brand">MICROPROCESSOR STUDY GUIDE</span>
+    <span class="small">Chapter 01 / 8086 fundamentals</span>
+    <details class="toc" open><summary>Contents</summary><nav aria-label="Chapter contents"><ol>
+      <li><a href="#bat-dau">00 · Assembly &amp; objectives</a></li>
+      <li><a href="#bieu-dien">01 · Bits, bytes &amp; endianness</a></li>
+      <li><a href="#he-vi-xu-ly">02 · The system &amp; its buses</a></li>
+      <li><a href="#kien-truc">03 · BIU, EU &amp; prefetch</a></li>
+      <li><a href="#thanh-ghi">04 · Register groups</a></li>
+      <li><a href="#phan-doan">05 · Segmented memory</a></li>
+      <li><a href="#co">06 · Flags &amp; operand width</a></li>
+      <li><a href="#ibm-pc">07 · IBM PC memory &amp; I/O</a></li>
+      <li><a href="#mov">08 · Understanding MOV</a></li>
+      <li><a href="#che-do-dia-chi">09 · Addressing modes</a></li>
+      <li><a href="#ma-hoa">10 · Instruction encoding</a></li>
+      <li><a href="#thuc-hanh">11 · emu8086 practice</a></li>
+      <li><a href="#bai-tap">12 · Worked exercises</a></li>
+      <li><a href="#tu-kiem-tra">13 · Knowledge check</a></li>
+      <li><a href="#tra-cuu">14 · Revision &amp; references</a></li>
+    </ol></nav></details>
+  </div></aside>
+  <main id="noi-dung">
+    <header>
+      <div class="eyebrow">Microprocessor Study Guide · Chapter 01</div>
+      <h1>8086 fundamentals: architecture, memory and addressing</h1>
+      <p class="lead">A study and revision chapter for assembly beginners and microprocessor students. Each topic develops a concept, states its rules, works through examples and offers questions to test your understanding.</p>
+      <p class="small">Scope: Intel 8088/8086, real mode, Intel/MASM syntax and emu8086.</p>
+      <div class="actions"><a class="button" href="#bat-dau">Start reading</a><a class="button" href="#bai-tap">Try the exercises</a><button type="button" id="print">Print / save PDF</button></div>
+    </header>
+
+    <section id="bat-dau">
+      <h2>00. Assembly language and how to study this chapter</h2>
+      <h3>What is assembly language?</h3>
+      <p>Assembly language represents machine instructions using mnemonics such as <code>MOV</code> and <code>ADD</code>, together with register names such as <code>AX</code>. An assembler translates this source into machine-code bytes that the CPU executes. Instructions operate on particular registers and memory locations, so understanding the processor architecture helps you interpret a program correctly.</p>
+      <pre><code>MOV AX, 1234h    ; load a 16-bit constant into AX
+ADD AX, 1        ; add 1 to AX: AX becomes 1235h</code></pre>
+      <p>This is Intel syntax: the destination comes first and the source comes second. A semicolon begins a comment extending to the end of the line. A mnemonic does not behave like an unrestricted high-level function: each instruction form has rules for its operands, width and affected flags.</p>
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Interpret bit patterns as signed or unsigned numbers and combine bytes using little-endian order.</li>
+        <li>Explain how the CPU, memory, I/O and three types of bus cooperate.</li>
+        <li>Distinguish the BIU and EU and identify the register groups.</li>
+        <li>Calculate an effective address and convert <code>segment:offset</code> to a physical address.</li>
+        <li>Explain CF, OF and the remaining status flags after an 8-bit or 16-bit addition.</li>
+        <li>Read MOV instructions, select the default segment and predict which bytes are accessed.</li>
+      </ul>
+      <div class="note"><p><strong>Study route:</strong> read sections 01–05 to build the foundation, then 08–09 to understand memory operands. Study section 06 when starting arithmetic. Use 12–14 for revision. If number systems and registers are already familiar, begin with the memory examples and exercises.</p></div>
+      <p><strong>Prerequisites:</strong> basic arithmetic, binary and hexadecimal notation. Previous knowledge of a high-level language is optional. Here, <code>h</code> marks hexadecimal and <code>b</code> marks binary; an unsuffixed constant is decimal in the syntax used by this chapter.</p>
+      <p class="source-note">The chapter's sources appear under <a href="#tai-lieu-tham-khao">References</a>. The explanations and exercises are designed to stand on their own.</p>
+    </section>
+
+    <section id="bieu-dien">
+      <h2>01. One value, several representations</h2>
+      <h3>1.1. Bits, bytes, words and hexadecimal</h3>
+      <p>A bit holds 0 or 1. A byte contains 8 bits. In this 8086 chapter, a word contains 16 bits, or two bytes. Each hexadecimal digit represents four bits: two hexadecimal digits describe a byte, and four describe a word.</p>
+      <div class="table-wrap"><table><caption>Different notations for the same value</caption><thead><tr><th>Decimal</th><th>Binary</th><th>Assembly hex notation</th></tr></thead><tbody>
+        <tr><td>12</td><td><code>00001100b</code></td><td><code>0Ch</code></td></tr>
+        <tr><td>44</td><td><code>00101100b</code></td><td><code>2Ch</code></td></tr>
+        <tr><td>128</td><td><code>10000000b</code></td><td><code>80h</code></td></tr>
+        <tr><td>255</td><td><code>11111111b</code></td><td><code>0FFh</code></td></tr>
+      </tbody></table></div>
+      <p>For example, <code>1234h</code> = 1 × 16³ + 2 × 16² + 3 × 16 + 4 = 4660 decimal. The suffix specifies the number base; it is not part of the stored value.</p>
+      <h3>1.2. Little-endian orders bytes, not individual bits</h3>
+      <p>The memory model used here is byte-addressable: each address identifies one byte. The word <code>1234h</code> has a low byte of <code>34h</code> and a high byte of <code>12h</code>. Little-endian stores the low byte at the lower address.</p>
+      <div class="table-wrap"><table><caption>Storing 1234h at 0100h; addresses increase down the table</caption><thead><tr><th>Address</th><th>Little-endian</th><th>Big-endian</th></tr></thead><tbody>
+        <tr><td><code>0100h</code></td><td><code>34h</code> — low byte</td><td><code>12h</code> — high byte</td></tr>
+        <tr><td><code>0101h</code></td><td><code>12h</code> — high byte</td><td><code>34h</code> — low byte</td></tr>
+      </tbody></table></div>
+      <p>The four bytes of <code>12345678h</code> appear at increasing addresses as <code>78h, 56h, 34h, 12h</code>. To reconstruct the value, take the byte at the initial address as the low part and place later bytes above it.</p>
+      <div class="note warning"><p><strong>Read address labels rather than page position.</strong> A diagram may put high addresses at the top or at the bottom. The rule remains: the low byte occupies the lower address.</p></div>
+      <p>Endianness matters when a value spans multiple bytes. It does not turn 34h into 43h or change the meaning of <code>AX = 1234h</code>. For that register value, AH=12h and AL=34h.</p>
+      <h3>1.3. Signed and unsigned interpretation</h3>
+      <p>An 8-bit unsigned number ranges from 0 to 255. An 8-bit signed number in two's complement ranges from −128 to +127. The pattern <code>80h</code> means unsigned 128 or signed −128, depending on how it is interpreted.</p>
+      <div class="table-wrap"><table><thead><tr><th>Width</th><th>Unsigned range</th><th>Signed two's-complement range</th></tr></thead><tbody><tr><td>8 bits</td><td>0…255</td><td>−128…127</td></tr><tr><td>16 bits</td><td>0…65535</td><td>−32768…32767</td></tr><tr><td>n bits</td><td>0…2ⁿ − 1</td><td>−2ⁿ⁻¹…2ⁿ⁻¹ − 1</td></tr></tbody></table></div>
+      <p>To encode −13 in 8 bits, write 13 as <code>00001101b</code>, invert the bits to <code>11110010b</code>, then add one: <code>11110011b = 0F3h</code>. To interpret an 8-bit pattern whose most significant bit is 1, subtract 256 from its unsigned value: 243 − 256 = −13.</p>
+      <details><summary>Try it: addresses 0200h and 0201h contain 78h and 56h. What word begins at 0200h?</summary><p><code>5678h</code>. The low byte is 78h and the high byte is 56h. A byte read at 0200h alone returns 78h.</p></details>
+      <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>.</p>
+    </section>
+
+    <section id="he-vi-xu-ly">
+      <h2>02. The CPU belongs to a larger system</h2>
+      <p>A <strong>microprocessor</strong> is the CPU. A <strong>microprocessor system</strong> also needs memory, I/O interfaces and connections between its components. A CPU alone is not a complete computer.</p>
+      <div class="table-wrap"><table><thead><tr><th>Component</th><th>Purpose</th><th>Example</th></tr></thead><tbody>
+        <tr><td>CPU</td><td>Fetch, decode and execute instructions</td><td>8088, 8086</td></tr>
+        <tr><td>Memory</td><td>Store instructions, data and intermediate results</td><td>RAM, ROM</td></tr>
+        <tr><td>I/O interface</td><td>Adapt signals and transactions between the processor and peripherals</td><td>Keyboard or display interface</td></tr>
+        <tr><td>Buses</td><td>Carry addresses, data and control signals</td><td>Address, data and read/write lines</td></tr>
+      </tbody></table></div>
+      <p>Ordinary RAM is volatile: it loses its contents without power. SRAM retains bits using storage circuits, while DRAM requires periodic refresh. ROM-related memories such as EPROM, EEPROM and Flash retain data without power, but differ in how they are programmed and erased. The term ROM does not imply that every member of the family can never be rewritten.</p>
+      <h3>2.1. Three buses answer three different questions</h3>
+      <ul>
+        <li><strong>Address bus:</strong> which location is being accessed? With the CPU as bus master, it supplies the address to memory or I/O.</li>
+        <li><strong>Data bus:</strong> which value is being transferred? Reads bring data into the CPU; writes send data out.</li>
+        <li><strong>Control bus:</strong> what operation is requested, and is the transaction ready? Individual control lines have their own signal directions. A two-way arrow for the group does not make every wire bidirectional.</li>
+      </ul>
+      <p>An 8-bit data bus transfers eight data bits per bus data transfer. A 20-bit address bus represents 2²⁰ distinct addresses. These widths describe different capabilities.</p>
+      <div class="formula">n address lines → 2ⁿ distinct addresses</div>
+      <p>For byte-addressable memory, 20 address lines cover 2²⁰ bytes = 1,048,576 bytes = <strong>1 MiB</strong>, often called “1 MB” in older material. The address range is <code>00000h…FFFFFh</code>. Address capacity describes what can be selected; it does not prove that all those locations contain installed RAM.</p>
+      <h3>2.2. Follow a read or write transaction</h3>
+      <ol>
+        <li>The CPU places the requested address on the address bus.</li>
+        <li>It issues the appropriate read or write control signal.</li>
+        <li>For a read, the selected component drives the data bus. For a write, the CPU supplies the data.</li>
+        <li>The transfer completes according to the system's timing and readiness signals. A slow device can require waiting.</li>
+      </ol>
+      <p>The conceptual instruction cycle is <strong>fetch → decode → execute</strong>: obtain instruction bytes, determine the operation and operands, then carry out the operation. Executing one instruction may require additional data reads or writes. An instruction cycle is not necessarily a single bus cycle or clock tick.</p>
+      <h3>2.3. Interrupts and DMA</h3>
+      <p>An <strong>interrupt</strong> requests a change in execution to service an event. When the CPU accepts the request, it saves the required return information and runs an interrupt handler. The handler can then return to the previous work. Maskable requests may be disabled or delayed; every request is not necessarily serviced immediately.</p>
+      <p><strong>DMA</strong> allows a controller to transfer data between a peripheral and memory without CPU instructions moving every element. The CPU usually still sets up the operation and handles completion. Bus ownership must be coordinated; direct access does not eliminate the controller.</p>
+      <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>.</p>
+    </section>
+
+    <section id="kien-truc">
+      <h2>03. The BIU handles the bus; the EU executes instructions</h2>
+      <p>The 8088 and 8086 divide their work between two main units. The <strong>Bus Interface Unit (BIU)</strong> generates physical addresses, fetches instruction bytes and performs memory and I/O transactions. The <strong>Execution Unit (EU)</strong> receives instruction bytes from the queue, decodes them and executes operations using its control logic, ALU and registers.</p>
+      <figure>
+        <div class="flow" aria-label="Instruction fetch path: memory, BIU, instruction byte queue, EU">
+          <div class="block"><strong>Memory</strong><small>Instruction bytes</small></div><span aria-hidden="true">→</span>
+          <div class="block"><strong>BIU</strong><small>Address + bus access</small></div><span aria-hidden="true">→</span>
+          <div class="block"><strong>Queue</strong><small>4 or 6 bytes</small></div><span aria-hidden="true">→</span>
+          <div class="block"><strong>EU</strong><small>Decode + execute</small></div>
+        </div>
+        <figcaption>Conceptual instruction-fetch path. The BIU also performs data accesses requested during execution.</figcaption>
+      </figure>
+      <div class="table-wrap"><table><thead><tr><th>Feature</th><th>8088</th><th>8086</th></tr></thead><tbody><tr><td>General registers and ALU</td><td>16 bits</td><td>16 bits</td></tr><tr><td>External data bus</td><td>8 bits</td><td>16 bits</td></tr><tr><td>Address bus</td><td>20 bits</td><td>20 bits</td></tr><tr><td>Instruction prefetch queue</td><td>4 bytes</td><td>6 bytes</td></tr></tbody></table></div>
+      <p>The 8088 remains a 16-bit processor despite its 8-bit external data bus. Transferring a word over that bus needs two byte transfers. On the 8086, word-transfer behavior also depends on address alignment; a 16-bit operation does not guarantee a single bus cycle.</p>
+      <h3>3.1. Why prefetching helps</h3>
+      <p>While the EU performs an internal operation and the bus is available, the BIU can fetch bytes from the subsequent instruction stream. The EU can then consume bytes already in the queue instead of always waiting for a fresh fetch. This overlaps fetching with execution.</p>
+      <div class="note warning"><p><strong>Separate the conceptual cycle from timing.</strong> Fetch, decode and execute describe tasks. On the 8086, overlapping fetch with execution does not mean three independent stages taking exactly one tick each, nor a guaranteed threefold speedup. Data accesses compete for the bus, and control transfers require the queue to be refilled for the new instruction stream.</p></div>
+      <p>Queue capacity is measured in <strong>bytes</strong>, not instructions. Six bytes may contain several short instructions or only part of a longer instruction sequence.</p>
+      <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>.</p>
+    </section>
+
+    <section id="thanh-ghi">
+      <h2>04. Registers hold data and help locate it</h2>
+      <p>The eight 16-bit general-purpose registers are AX, BX, CX, DX, SP, BP, SI and DI. For study, this section separates the four registers with accessible 8-bit halves from the pointer and index registers.</p>
+      <h3>4.1. AX, BX, CX and DX</h3>
+      <div class="table-wrap"><table><thead><tr><th>Register</th><th>8-bit halves</th><th>Common roles in specific instructions</th></tr></thead><tbody>
+        <tr><td><code>AX</code></td><td><code>AH / AL</code></td><td>Accumulator; many multiply/divide and I/O forms use AX or AL</td></tr>
+        <tr><td><code>BX</code></td><td><code>BH / BL</code></td><td>Base register; can contribute to a memory operand's offset</td></tr>
+        <tr><td><code>CX</code></td><td><code>CH / CL</code></td><td>Count register; LOOP uses CX, and shift/rotate forms can use CL</td></tr>
+        <tr><td><code>DX</code></td><td><code>DH / DL</code></td><td>Participates with AX in 16-bit multiply/divide; can hold an I/O port address</td></tr>
+      </tbody></table></div>
+      <p>These registers can also hold ordinary data. Their conventional names do not require every addition to use AX or every counter to use CX.</p>
+      <pre><code>MOV AX, 1234h    ; AH = 12h, AL = 34h
+MOV AL, 56h      ; AX = 1256h; AH remains 12h
+MOV AH, 0ABh     ; AX = AB56h</code></pre>
+      <p>AH and AL are views of portions of AX, not three independent storage locations. Updating either half updates the corresponding part of AX. A 16-bit register need not be written with four explicit hexadecimal digits: <code>MOV AX, 44h</code> loads 0044h.</p>
+      <figure><div class="table-wrap"><table class="register-layout"><caption>One 16-bit register, accessible as a word or as two byte halves</caption><thead><tr><th>Bits 15…8 — AH</th><th>Bits 7…0 — AL</th></tr></thead><tbody><tr><td>0001 0010 = 12h</td><td>0011 0100 = 34h</td></tr><tr><td colspan="2">AX = 0001 0010 0011 0100b = 1234h</td></tr></tbody></table></div><figcaption>Changing AL updates bits 7…0; changing AH updates bits 15…8. This describes a register layout, not byte order in memory.</figcaption></figure>
+      <h3>4.2. Segment, pointer and index registers</h3>
+      <div class="table-wrap"><table><thead><tr><th>Group</th><th>Register</th><th>Purpose</th></tr></thead><tbody>
+        <tr><td>Segment</td><td><code>CS</code></td><td>Code segment for the instruction stream</td></tr>
+        <tr><td>Segment</td><td><code>DS</code></td><td>Default data segment for many memory operands</td></tr>
+        <tr><td>Segment</td><td><code>SS</code></td><td>Stack segment</td></tr>
+        <tr><td>Segment</td><td><code>ES</code></td><td>Extra segment; destination segment for many string instructions</td></tr>
+        <tr><td>Pointer</td><td><code>IP</code></td><td>Instruction offset within CS</td></tr>
+        <tr><td>Pointer</td><td><code>SP</code></td><td>Offset of the stack top within SS</td></tr>
+        <tr><td>Pointer</td><td><code>BP</code></td><td>Base pointer, commonly used to access data in SS</td></tr>
+        <tr><td>Index</td><td><code>SI, DI</code></td><td>Source/destination indices; also usable for addressing and data</td></tr>
+      </tbody></table></div>
+      <p>A stack follows LIFO: the last item pushed is the first item popped. It commonly holds return information, saved values and temporary data. SP identifies the current position, while SS establishes the segment containing the stack.</p>
+      <h3>4.3. Register pairs and their limits</h3>
+      <ul>
+        <li><code>CS:IP</code> locates the instruction stream.</li>
+        <li><code>SS:SP</code> locates the stack top; ordinary memory operands using BP default to SS.</li>
+        <li><code>DS:BX</code>, <code>DS:SI</code> and <code>DS:DI</code> apply to ordinary memory addressing without BP.</li>
+        <li>For string instructions such as MOVS, the usual source is <code>DS:SI</code> and the destination is <code>ES:DI</code>.</li>
+      </ul>
+      <div class="note warning"><p><strong>DI does not always select ES.</strong> <code>MOV AX, [DI]</code> defaults to DS. ES:DI describes the destination of string instructions. Apply the rule for the actual instruction form.</p></div>
+      <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>, <a href="#ref-asm1">[3]</a>.</p>
+    </section>
+
+    <section id="phan-doan">
+      <h2>05. Two 16-bit values locate a 20-bit address</h2>
+      <h3>5.1. Segment and offset</h3>
+      <p>The 8086 has a 20-bit address space, but its segment and offset registers are 16 bits wide. An address is constructed from a segment value that establishes a base and an offset that counts bytes from that base.</p>
+      <div class="formula">Physical address = segment × 16 + offset = (segment &lt;&lt; 4) + offset</div>
+      <p>In this real-mode chapter, <code>segment:offset</code> denotes a logical address. Multiplying the segment by 16 shifts it left four bits; in hexadecimal notation, append one zero. Thus <code>1000h × 16 = 10000h</code>.</p>
+      <pre><code>Logical address:  1000h:2345h
+Segment base:     1000h × 10h = 10000h
+Physical address: 10000h + 2345h = 12345h</code></pre>
+      <p>Do not concatenate the text “1000” and “2345” or simply add the two 16-bit values. The segment register holds a value that must be scaled; it does not hold the physical base directly.</p>
+      <h3>5.2. Segment size and overlap</h3>
+      <p>A 16-bit offset ranges from 0000h to FFFFh, selecting 65,536 byte positions. A segment therefore spans up to 64 KiB. Increasing the segment value by one moves its base only 16 bytes, so segments can overlap.</p>
+      <div class="table-wrap"><table><thead><tr><th>Segment</th><th>Base address</th><th>Address at offset FFFFh</th></tr></thead><tbody><tr><td><code>0000h</code></td><td><code>00000h</code></td><td><code>0FFFFh</code></td></tr><tr><td><code>0001h</code></td><td><code>00010h</code></td><td><code>1000Fh</code></td></tr><tr><td><code>4900h</code></td><td><code>49000h</code></td><td><code>58FFFh</code></td></tr></tbody></table></div>
+      <p>For an inclusive address interval, calculate its size as <code>last − first + 1</code>. The interval 49000h…58FFFh contains 10000h = 65,536 bytes. Omitting the final +1 loses one location.</p>
+      <h3>5.3. Different logical addresses can identify one byte</h3>
+      <div class="table-wrap"><table><caption>Three representations of physical address 12345h</caption><thead><tr><th>Segment:offset</th><th>Calculation</th></tr></thead><tbody><tr><td><code>1000h:2345h</code></td><td><code>10000h + 2345h = 12345h</code></td></tr><tr><td><code>1200h:0345h</code></td><td><code>12000h + 0345h = 12345h</code></td></tr><tr><td><code>1004h:2305h</code></td><td><code>10040h + 2305h = 12345h</code></td></tr></tbody></table></div>
+      <p>If the physical address and segment are known, compute <code>offset = physical address − segment × 16</code>. For an ordinary nonwrapping calculation, the result must fit in 0000h…FFFFh. An arbitrary segment is not guaranteed to produce a valid offset for your chosen address.</p>
+      <div class="note"><p><strong>At the address-space boundary:</strong> the arithmetic sum can exceed FFFFFh. The original 8086/8088 exposes only 20 address lines, so the bus carries the low 20 bits. <code>FFFFh:0010h</code> produces 100000h and wraps to 00000h on that bus. Do not apply this hardware rule unconditionally to later machines with A20 control.</p></div>
+      <form id="address-form" class="lab interactive">
+        <h3>Address calculator</h3>
+        <p class="small" id="address-help">Enter hex values from 0000 to FFFF: 1234, 1234h and 0x1234 are accepted. Models the original 8086/8088 with a 20-bit address bus.</p>
+        <div class="inputs">
+          <div><label for="segment">Segment</label><input id="segment" name="segment" value="1000" maxlength="7" required aria-describedby="address-help" autocomplete="off" spellcheck="false"></div>
+          <div><label for="offset">Offset</label><input id="offset" name="offset" value="2345" maxlength="7" required aria-describedby="address-help" autocomplete="off" spellcheck="false"></div>
+          <button type="submit">Calculate address</button>
+        </div>
+        <output id="address-output" aria-live="polite" aria-atomic="true">1000h × 10h + 2345h = 12345h
+Address on the 20-bit bus: 12345h</output>
+      </form>
+      <details><summary>Try it: if the segment base is 49000h, is the segment register 49000h or 4900h?</summary><p>It is <code>4900h</code>; 49000h is the physical base. If a question gives the physical base, add FFFFh to find the last byte of a full segment. If it gives the register value, multiply by 16 first.</p></details>
+      <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>, <a href="#ref-asm2">[4]</a>.</p>
+    </section>
+
+    <section id="co">
+      <h2>06. Flags depend on both the operation and its width</h2>
+      <p>FLAGS is a 16-bit register. The original 8086 has nine functional flags discussed here: six status flags and three control flags. Status flags describe results of instructions that update them. Not every instruction changes FLAGS.</p>
+      <div class="table-wrap"><table><thead><tr><th>Status flag</th><th>When is it 1?</th><th>Common mistake</th></tr></thead><tbody>
+        <tr><td><code>CF</code> — Carry</td><td>ADD carries beyond the highest bit; SUB requires a borrow</td><td>For ADD, it reports overflow of the unsigned interpretation</td></tr>
+        <tr><td><code>PF</code> — Parity</td><td>The result's low byte contains an even number of set bits</td><td>Count only eight low bits, even for a word operation</td></tr>
+        <tr><td><code>AF</code> — Auxiliary carry</td><td>Addition carries from bit 3 to bit 4; subtraction borrows across that boundary</td><td>CF=1 does not imply AF=1</td></tr>
+        <tr><td><code>ZF</code> — Zero</td><td>The width-limited result is zero</td><td>Examine the stored result, not the untruncated sum</td></tr>
+        <tr><td><code>SF</code> — Sign</td><td>The result's most significant bit is 1</td><td>It means “negative” only for signed interpretation</td></tr>
+        <tr><td><code>OF</code> — Overflow</td><td>The mathematical signed result falls outside the representable range</td><td>For ADD, equal-sign operands giving an opposite-sign result cause OF</td></tr>
+      </tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Control flag</th><th>Purpose</th></tr></thead><tbody><tr><td><code>TF</code> — Trap</td><td>Supports instruction-by-instruction trapping</td></tr><tr><td><code>IF</code> — Interrupt enable</td><td>Enables maskable hardware interrupts when set; it does not disable every interrupt type when cleared</td></tr><tr><td><code>DF</code> — Direction</td><td>Controls index updates for string instructions: 0 increments, 1 decrements</td></tr></tbody></table></div>
+      <h3>6.1. The same 80h + 80h at two widths</h3>
+      <pre><code>; Case A: 8-bit addition
+MOV AL, 80h
+MOV AH, 80h
+ADD AL, AH       ; full sum 100h; AL retains only 00h
+
+; Case B: 16-bit addition
+MOV AX, 0080h
+MOV BX, 0080h
+ADD AX, BX       ; AX retains 0100h</code></pre>
+      <div class="table-wrap"><table><thead><tr><th></th><th>ADD AL, AH — 8 bits</th><th>ADD AX, BX — 16 bits</th></tr></thead><tbody>
+        <tr><td>Stored result</td><td><code>00h</code></td><td><code>0100h</code></td></tr>
+        <tr><td>CF</td><td>1 — unsigned 256 exceeds 255</td><td>0 — unsigned 256 fits in 16 bits</td></tr>
+        <tr><td>OF</td><td>1 — −128 + (−128) = −256 is outside the signed 8-bit range</td><td>0 — +128 + +128 = +256 is representable</td></tr>
+        <tr><td>SF</td><td>0 — bit 7 of 00h is 0</td><td>0 — bit 15 of 0100h is 0</td></tr>
+        <tr><td>ZF</td><td>1 — stored result is zero</td><td>0 — stored result is nonzero</td></tr>
+        <tr><td>AF</td><td>0 — low nibbles 0+0 do not carry</td><td>0 — low nibbles 0+0 do not carry</td></tr>
+        <tr><td>PF</td><td>1 — low byte has zero set bits</td><td>1 — low byte 00h has zero set bits</td></tr>
+      </tbody></table></div>
+      <p>Zero is even. A byte containing 00h therefore has even parity. For the word result 0100h, the one set bit in the high byte is irrelevant to PF.</p>
+      <h3>6.2. CF and OF answer different questions</h3>
+      <div class="table-wrap"><table><caption>Unsigned and signed overflow in 8-bit ADD</caption><thead><tr><th>Addition</th><th>Stored result</th><th>CF</th><th>OF</th><th>Reason</th></tr></thead><tbody>
+        <tr><td><code>7Fh + 01h</code></td><td><code>80h</code></td><td>0</td><td>1</td><td>Unsigned 128 fits; signed +127+1 exceeds +127</td></tr>
+        <tr><td><code>FFh + 01h</code></td><td><code>00h</code></td><td>1</td><td>0</td><td>Unsigned 255+1 overflows; signed −1+1 fits</td></tr>
+        <tr><td><code>80h + 80h</code></td><td><code>00h</code></td><td>1</td><td>1</td><td>Both interpretations overflow</td></tr>
+        <tr><td><code>01h + 02h</code></td><td><code>03h</code></td><td>0</td><td>0</td><td>Both interpretations fit</td></tr>
+      </tbody></table></div>
+      <p>To calculate ADD flags: determine the width, add the values, retain the result at that width, determine CF from the unsigned sum and OF from the signed interpretation, then examine SF, ZF, PF and AF. MOV does not update these flags; flags displayed after MOV may still belong to a previous instruction.</p>
+      <form id="flags-form" class="lab interactive">
+        <h3>Addition and flags calculator</h3>
+        <p class="small" id="flags-help">Models ADD only. Enter unsigned hexadecimal bit patterns and select the operand width.</p>
+        <div class="inputs">
+          <div><label for="width">Width</label><select id="width" name="width"><option value="8">8 bits</option><option value="16">16 bits</option></select></div>
+          <div><label for="operand-a">Operand A (hex)</label><input id="operand-a" name="a" value="80" maxlength="7" required aria-describedby="flags-help" autocomplete="off" spellcheck="false"></div>
+          <div><label for="operand-b">Operand B (hex)</label><input id="operand-b" name="b" value="80" maxlength="7" required aria-describedby="flags-help" autocomplete="off" spellcheck="false"></div>
+          <button type="submit">Add &amp; inspect flags</button>
+        </div>
+        <output id="flags-output" aria-live="polite" aria-atomic="true">80h + 80h → 00h (8 bits)
+CF=1 · OF=1 · SF=0 · ZF=1 · AF=0 · PF=1</output>
+      </form>
+      <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>, <a href="#ref-asm6">[5]</a>.</p>
+    </section>
+
+    <section id="ibm-pc">
+      <h2>07. The address space includes more than application RAM</h2>
+      <h3>7.1. Major regions of the classic IBM PC model</h3>
+      <p>The 1 MiB address space is assigned to different functions. The lower 640 KiB is conventional memory, containing system data, the operating system and application areas. The upper 384 KiB is reserved for display memory, ROM and other system mappings. Applications do not receive all 640 KiB as unused memory.</p>
+      <div class="table-wrap"><table><caption>Important addresses in the classic PC model</caption><thead><tr><th>Physical range</th><th>Size</th><th>Purpose</th></tr></thead><tbody>
+        <tr><td><code>00000h…9FFFFh</code></td><td>640 KiB</td><td>Conventional memory, including system data and programs</td></tr>
+        <tr><td><code>A0000h…FFFFFh</code></td><td>384 KiB</td><td>System area and hardware mappings</td></tr>
+        <tr><td><code>00000h…003FFh</code></td><td>1 KiB</td><td>Interrupt vector table</td></tr>
+        <tr><td><code>00400h…004FFh</code></td><td>256 bytes</td><td>BIOS data area</td></tr>
+        <tr><td><code>A0000h…BFFFFh</code></td><td>128 KiB in the model</td><td>Display-memory address area; use depends on the adapter</td></tr>
+        <tr><td><code>F0000h…FFFFFh</code></td><td>64 KiB in the model</td><td>BIOS ROM area</td></tr>
+        <tr><td><code>FFFF0h</code></td><td>Entry address</td><td>First instruction fetch after reset</td></tr>
+      </tbody></table></div>
+      <p>In real mode, the interrupt vector table has 256 entries of four bytes each. Each entry contains the handler's offset and segment: 256 × 4 = 1024 bytes. The table holds <em>addresses</em> of handlers, not the entire code for all 256 handlers.</p>
+      <div class="note warning"><p><strong>Which details depend on configuration?</strong> DOS components, drivers, COMMAND.COM and application regions depend on the software version and loading arrangement. Their illustrative boundaries are not universal CPU requirements. COMMAND.COM interprets DOS commands; it is not an assembler translating every keystroke into machine code.</p></div>
+      <h3>7.2. From reset to an application</h3>
+      <ol>
+        <li>The original 8086/8088 resets with <code>CS = FFFFh</code>, <code>IP = 0000h</code>, identifying physical address FFFF0h.</li>
+        <li>The instruction at that entry transfers control to BIOS initialization code in ROM.</li>
+        <li>The BIOS checks and initializes hardware, the BIOS data area and interrupt vectors.</li>
+        <li>It loads a boot program from storage into RAM and transfers control to it.</li>
+        <li>The boot program loads the operating system, which can subsequently load applications.</li>
+      </ol>
+      <p>The reset entry is near the top of the address space, not at 00000h. This description applies to the original processors in this chapter; later x86 reset behavior should be checked separately.</p>
+      <h3>7.3. I/O ports have a separate address space</h3>
+      <p>The 8086 has port addresses <code>0000h…FFFFh</code>, providing 2¹⁶ distinct port addresses. This space is separate from memory addresses <code>00000h…FFFFFh</code>. Port 20h is not automatically the memory byte at physical address 00020h.</p>
+      <p><code>IN</code> and <code>OUT</code> access ports. DX can specify a 16-bit port address, while forms with an immediate port number encode an 8-bit address. COM1 at 03F8h, COM2 at 02F8h and LPT1 at 0378h are classic PC hardware conventions rather than requirements for every 8086 system.</p>
+      <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>.</p>
+    </section>
+
+    <section id="mov">
+      <h2>08. MOV copies the source into the destination</h2>
+      <div class="formula"><code>MOV destination, source</code> → destination ← source value</div>
+      <p><code>MOV BX, DX</code> copies DX into BX and leaves DX unchanged. It does not erase the source or exchange the operands. Distinguish an operand's kind from its current value.</p>
+      <div class="table-wrap"><table><thead><tr><th>Notation</th><th>Operand kind</th><th>Meaning</th></tr></thead><tbody><tr><td><code>BX</code></td><td>Register</td><td>The value currently in BX</td></tr><tr><td><code>1234h</code></td><td>Immediate</td><td>The constant 1234h encoded in the instruction</td></tr><tr><td><code>[1234h]</code></td><td>Memory</td><td>Data at offset 1234h in the default segment</td></tr><tr><td><code>[BX]</code></td><td>Memory</td><td>Data at an offset given by the current BX value</td></tr></tbody></table></div>
+      <pre><code>MOV AX, 1234h      ; load a constant: AX = 1234h
+MOV AX, [1234h]    ; read a word beginning at DS:1234h
+MOV AX, BX         ; copy the value in BX
+MOV AX, [BX]       ; read a word beginning at DS:BX</code></pre>
+      <h3>8.1. Check legality before calculating a result</h3>
+      <ul>
+        <li>The two data operands must have matching widths. <code>MOV AL, BX</code> is invalid: AL has 8 bits, BX has 16.</li>
+        <li>Ordinary MOV cannot have two memory operands. Copy through a register or use an appropriate string instruction.</li>
+        <li>An immediate constant cannot be loaded directly into a segment register: <code>MOV DS, 0FF0h</code> is invalid.</li>
+        <li>MOV cannot directly copy one segment register into another: <code>MOV ES, DS</code> is invalid.</li>
+        <li>MOV cannot write CS or IP. Use the appropriate control-transfer mechanism.</li>
+      </ul>
+      <pre><code>; Initialize DS through a 16-bit register
+MOV AX, 0FF0h
+MOV DS, AX
+
+; Copy DS into ES through AX
+MOV AX, DS
+MOV ES, AX</code></pre>
+      <p>These examples demonstrate valid syntax. Changing DS changes the physical region addressed by later data accesses, so initialize it according to your program's memory layout.</p>
+      <h3>8.2. Specify memory width when it cannot be inferred</h3>
+      <p>If the memory operand has no declared type, <code>MOV [BX], 10</code> does not identify a byte or word write. State the intended width:</p>
+      <pre><code>MOV BYTE PTR [BX], 10   ; write one byte: 0Ah
+MOV WORD PTR [BX], 10   ; write two bytes: 0Ah, then 00h
+
+MOV [BX], AL           ; AL determines a byte transfer
+MOV [BX], AX           ; AX determines a word transfer</code></pre>
+      <p>A typed variable can also allow the assembler to infer the size. Avoid depending on an unspecified tool default.</p>
+      <h3>8.3. Decimal, hexadecimal and character constants</h3>
+      <pre><code>MOV BL, 44          ; decimal 44 → BL = 2Ch
+MOV BL, 44h         ; hex 44h    → BL = 44h
+MOV AL, 00001100b   ; decimal 12 → AL = 0Ch
+MOV AL, 'A'         ; ASCII A    → AL = 41h
+MOV AX, 0ABCDh      ; a hex constant beginning with a letter needs a leading 0</code></pre>
+      <p>The leading zero in 0ABCDh lets the assembler recognize a number instead of an identifier in this syntax. It does not change the value. Uppercase 'A' is ASCII 41h; lowercase 'a' is 61h.</p>
+      <p class="source-note">References: <a href="#ref-slides">[2]</a>, <a href="#ref-asm2">[4]</a>.</p>
+    </section>
+
+    <section id="che-do-dia-chi">
+      <h2>09. Addressing modes describe where operands come from</h2>
+      <p>For a memory operand, calculate the <strong>effective address (EA)</strong>, select the <strong>segment</strong> and determine <strong>byte or word width</strong>. An addressing-mode name describes how the EA is formed. The seven categories below follow the course terminology.</p>
+      <div class="table-wrap"><table><thead><tr><th>Mode</th><th>Example</th><th>EA / source location</th><th>Default segment</th></tr></thead><tbody>
+        <tr><td>Register</td><td><code>MOV AL, BL</code></td><td>Source is BL</td><td>No memory operand</td></tr>
+        <tr><td>Immediate</td><td><code>MOV AX, 44h</code></td><td>Source is constant 44h</td><td>No memory operand in this example</td></tr>
+        <tr><td>Direct</td><td><code>MOV AL, [1234h]</code></td><td><code>1234h</code></td><td>DS</td></tr>
+        <tr><td>Register indirect</td><td><code>MOV AL, [BX]</code></td><td><code>BX</code></td><td>DS; BP-based access uses SS</td></tr>
+        <tr><td>Based relative</td><td><code>MOV AL, [BP+5]</code></td><td><code>BP + 5</code></td><td>SS; BX-based access uses DS</td></tr>
+        <tr><td>Indexed relative</td><td><code>MOV AX, [SI+10]</code></td><td><code>SI + 10</code></td><td>DS</td></tr>
+        <tr><td>Based indexed relative</td><td><code>MOV AX, [BX+SI+8]</code></td><td><code>BX + SI + 8</code></td><td>DS; expressions containing BP use SS</td></tr>
+      </tbody></table></div>
+      <p>EA is a 16-bit offset, not the physical address. If adding its components exceeds FFFFh, retain the low 16 bits of the EA before adding the segment base. The examples below use offsets away from the segment boundary.</p>
+      <h3>9.1. Direct addressing: the bracketed constant is an offset</h3>
+      <p>Suppose <code>DS = 1000h</code> and <code>memory[11234h] = 56h</code>. For <code>MOV AL, [1234h]</code>:</p>
+      <ol><li>EA=1234h.</li><li>The default segment is DS.</li><li>The physical address is 1000h×16+1234h=11234h.</li><li>AL is 8 bits, so one byte is read: AL=56h.</li></ol>
+      <p><code>MOV AL, 1234h</code> is a different request: loading an immediate that does not fit in AL. It is invalid for the stated width.</p>
+      <h3>9.2. A word write occupies two consecutive bytes</h3>
+      <pre><code>; Assume DS already identifies valid data memory
+MOV CX, 1234h
+MOV [4320h], CX
+; DS:4320h contains 34h
+; the next byte, DS:4321h, contains 12h
+
+MOV BX, [4320h]      ; BX = 1234h
+MOV BL, [4320h]      ; BL = 34h
+MOV BH, [4321h]      ; BH = 12h</code></pre>
+      <p>The address in a word operand identifies its low byte. The high byte follows it at the next physical byte address. The data width determines the number of bytes accessed; the number of hexadecimal digits in the offset does not.</p>
+      <h3>9.3. Indirect and relative forms use register values as offsets</h3>
+      <p>In <code>MOV AL, [BX]</code>, BX supplies an offset rather than the data copied directly into AL. In <code>MOV AX, [SI+10]</code>, the unsuffixed 10 is decimal, so EA=SI+0Ah.</p>
+      <p>The assembler used here can interpret <code>[BX]+10</code> and <code>[BX+10]</code> identically. Keeping the whole expression inside the brackets makes the memory operand easier to read.</p>
+      <h3>9.4. DS, SS and segment overrides</h3>
+      <ul><li>An ordinary memory address containing BP defaults to SS.</li><li>The other ordinary memory forms considered here default to DS.</li><li>An explicit segment, such as <code>ES:[BX]</code> or <code>DS:[BP+5]</code>, overrides the default where the instruction permits it.</li></ul>
+      <pre><code>MOV AL, [BX]        ; read DS:BX
+MOV AL, ES:[BX]     ; read ES:BX
+MOV CL, [BP+DI+5]   ; read SS:(BP + DI + 5)
+MOV CL, DS:[BP+5]   ; explicitly use DS instead of SS</code></pre>
+      <p>An override changes the segment base, not the EA formula. <code>MOV AL, ES:[BX]</code> does not add ES twice or replace BX with DI.</p>
+      <h3>9.5. Combine EA, segment selection and endianness</h3>
+      <p><strong>Worked example.</strong> Let DS=1000h, SS=2000h, BX=0100h, SI=0010h, BP=0100h and DI=0010h. Memory bytes at 10118h, 10119h and 20115h contain 34h, 12h and 7Ah respectively.</p>
+      <pre><code>MOV AX, [BX+SI+8]
+; EA = 0100h + 0010h + 0008h = 0118h
+; DS → first physical byte address = 10118h
+; AL = 34h, AH = 12h → AX = 1234h
+
+MOV CL, [BP+DI+5]
+; EA = 0100h + 0010h + 0005h = 0115h
+; BP selects SS → physical address = 20115h
+; CL has 8 bits → CL = 7Ah; read one byte</code></pre>
+      <h3>9.6. Only certain registers and combinations form an EA</h3>
+      <p>8086 memory addressing uses BX, BP, SI and DI. Encodable pairs include <code>BX+SI</code>, <code>BX+DI</code>, <code>BP+SI</code> and <code>BP+DI</code>, optionally with a displacement. Forms such as <code>[AX]</code>, <code>[SP]</code>, <code>[BX+BP]</code> and <code>[SI+DI]</code> are not valid 8086 memory addressing forms.</p>
+      <p>SP participates in stack operations, but this does not make <code>MOV AX, [SP]</code> valid on the 8086. Use a suitable BP-based or other legal addressing arrangement when accessing stack data.</p>
+      <div class="note"><p><strong>Memory-operand checklist:</strong> identify the operand kind → determine the width → calculate EA → select the segment → calculate the physical address → read/write little-endian bytes → update only the flags affected by the instruction.</p></div>
+      <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>, <a href="#ref-asm2">[4]</a>.</p>
+    </section>
+
+    <section id="ma-hoa">
+      <h2>10. The assembler produces machine-code bytes</h2>
+      <p>The CPU does not interpret the letters “MOV” as human-readable source. The assembler selects an encoding suitable for the operands and emits bytes describing the operation, registers, address calculation and any required constants.</p>
+      <h3>10.1. Fields in the register ↔ memory MOV form</h3>
+      <p>For this MOV form, the first byte is <code>100010 d w</code>. The second is <code>mod reg r/m</code>, with fields of two, three and three bits.</p>
+      <ul><li><code>w=0</code> selects byte data; <code>w=1</code> selects word data.</li><li><code>d=1</code> makes REG the destination; <code>d=0</code> makes REG the source.</li><li><code>mod</code> selects memory/displacement behavior or a register operand.</li><li><code>reg</code> names a register; <code>r/m</code> names a register or an EA form.</li></ul>
+      <div class="table-wrap"><table><thead><tr><th>MOD</th><th>Meaning in this form</th></tr></thead><tbody><tr><td><code>00</code></td><td>Memory, usually without displacement; R/M=110 is the special direct 16-bit address form</td></tr><tr><td><code>01</code></td><td>Memory with a signed 8-bit displacement</td></tr><tr><td><code>10</code></td><td>Memory with a 16-bit displacement</td></tr><tr><td><code>11</code></td><td>R/M identifies a register, not memory</td></tr></tbody></table></div>
+      <p>The d/w interpretation is specific to this encoding family. Immediate-to-register MOV uses another form. Instruction length depends on the encoding, displacement, immediate data and prefixes; a single fixed diagram does not describe every instruction stream.</p>
+      <h3>10.2. Encode MOV CL, [BX]</h3>
+      <ol><li>Select the MOV form <code>100010dw</code>.</li><li>CL is a byte register → w=0.</li><li>Data goes to CL → d=1.</li><li>[BX] has no displacement → mod=00.</li><li>CL is reg=001; [BX] is r/m=111.</li></ol>
+      <pre><code>Byte 1: 100010 1 0 = 10001010b = 8Ah
+Byte 2: 00 001 111 = 00001111b = 0Fh
+
+MOV CL, [BX] → 8A 0F</code></pre>
+      <p>This instruction occupies two code bytes but reads one data byte. Instruction length and operand width are separate properties. A two-byte instruction does not necessarily access a word.</p>
+      <p class="source-note">Reference: <a href="#ref-slides">[2]</a>.</p>
+    </section>
+
+    <section id="thuc-hanh">
+      <h2>11. Observe each instruction in emu8086</h2>
+      <p>Use <strong>Single Step</strong> to examine the state after each instruction. Predict the register values and memory bytes before executing, then compare. Running the entire program at once hides useful intermediate states.</p>
+      <h3>11.1. Write a word, then read its bytes</h3>
+      <p>Select a COM template in emu8086 and replace its contents with the following practice program. The variable <code>sample</code> belongs to the program. Initializing DS from CS allows the program to address that data rather than writing to an arbitrary system location.</p>
+      <pre><code>org 100h
+
+jmp start
+sample dw 0
+
+start:
+    mov ax, cs
+    mov ds, ax
+
+    mov cx, 1234h
+    mov [sample], cx
+    mov bx, [sample]
+    mov al, byte ptr [sample]
+    mov ah, byte ptr [sample+1]
+    ret</code></pre>
+      <div class="table-wrap"><table><thead><tr><th>Stop after</th><th>Expected observation</th></tr></thead><tbody>
+        <tr><td><code>mov cx, 1234h</code></td><td>CX=1234h; CH=12h; CL=34h</td></tr>
+        <tr><td><code>mov [sample], cx</code></td><td>sample's first byte=34h; next byte=12h</td></tr>
+        <tr><td><code>mov bx, [sample]</code></td><td>BX=1234h</td></tr>
+        <tr><td><code>mov al, byte ptr [sample]</code></td><td>AL=34h; AH retains its previous value</td></tr>
+        <tr><td><code>mov ah, byte ptr [sample+1]</code></td><td>AH=12h; AX=1234h</td></tr>
+      </tbody></table></div>
+      <p>After loading AL alone, do not assume AX=0034h. AX previously received CS, and an AL write leaves AH unchanged.</p>
+      <h3>11.2. Compare the two additions</h3>
+      <pre><code>org 100h
+
+mov al, 80h
+mov ah, 80h
+add al, ah        ; stop: AL=00h, CF=1, OF=1, ZF=1
+
+mov ax, 0080h
+mov bx, 0080h
+add ax, bx        ; stop: AX=0100h, CF=0, OF=0, ZF=0
+ret</code></pre>
+      <p>Record all six status flags after the first ADD. The intervening MOV instructions do not recalculate them. Step through the second ADD before comparing the new flags. Change the operands or width and explain the differences.</p>
+      <details><summary>If the result differs from your prediction, what should you check first?</summary><ol><li>Are you stopped before or after the instruction?</li><li>Is the displayed number hexadecimal or decimal?</li><li>Are you examining AX or only AL/AH?</li><li>Was DS initialized correctly?</li><li>Are you reading a byte or a word, and at which offset?</li><li>Do the displayed flags belong to the last ADD or an earlier instruction?</li></ol></details>
+      <p class="source-note">References: <a href="#ref-asm2">[4]</a>, <a href="#ref-asm6">[5]</a>.</p>
+    </section>
+
+    <section id="bai-tap">
+      <h2>12. Exercises with worked answers</h2>
+      <p>Apply the chapter's rules and write an explanation before opening each answer. If the question omits required data, state what can be determined and what remains unknown.</p>
+      <h3>Exercise 1 — Reconstruct a word</h3>
+      <p>DS:0200h contains CDh and DS:0201h contains ABh. Execute <code>MOV AX, [0200h]</code>. Find AX, AH and AL.</p>
+      <details><summary>Answer to exercise 1</summary><p>AL=CDh, AH=ABh and AX=ABCDh. The byte at the lower address supplies the low part of the word.</p></details>
+      <h3>Exercise 2 — An address is not the data at that address</h3>
+      <p>BX=1234h, DS=1000h and the byte at physical address 11234h is 56h. Compare <code>MOV AX, BX</code> and <code>MOV AL, [BX]</code>, considering each independently.</p>
+      <details><summary>Answer to exercise 2</summary><p>The first sets AX=1234h. The second sets AL=56h by reading 10000h+1234h=11234h. The second does not load 34h and tells you nothing about the previous AH value.</p></details>
+      <h3>Exercise 3 — Calculate a physical address</h3>
+      <p>DS=1234h and SI=7890h. Which physical address does <code>MOV AL, [SI]</code> read?</p>
+      <details><summary>Answer to exercise 3</summary><p>1234h×10h+7890h=12340h+7890h=<strong>19BD0h</strong>. Without the memory contents, AL's resulting value is unknown.</p></details>
+      <h3>Exercise 4 — Find an offset and segment boundary</h3>
+      <p>The physical address is 12345h and the segment is 1200h. Find the offset. Then find the final byte address of a full 64 KiB segment whose physical base is 49000h, without wrapping past 1 MiB.</p>
+      <details><summary>Answer to exercise 4</summary><p>Offset=12345h−12000h=0345h. The last address is 49000h+FFFFh=58FFFh. The inclusive size is 58FFFh−49000h+1=10000h bytes.</p></details>
+      <h3>Exercise 5 — BP selects the default segment</h3>
+      <p>DS=1000h, SS=2000h, BP=0100h and DI=0010h. Where does <code>MOV CL, [BP+DI+5]</code> read, and how many bytes?</p>
+      <details><summary>Answer to exercise 5</summary><p>EA=0115h. BP selects SS, giving physical address 20000h+0115h=<strong>20115h</strong>. CL has 8 bits, so one byte is read. DS is not used in this calculation.</p></details>
+      <h3>Exercise 6 — Distinguish CF from OF</h3>
+      <p>AL=7Fh. Execute <code>ADD AL, 1</code>. Find AL and all six status flags.</p>
+      <details><summary>Answer to exercise 6</summary><p>AL=80h. CF=0; OF=1; SF=1; ZF=0; AF=1 because Fh+1 carries into bit 4; PF=0 because 80h has one set bit. Signed +127+1 overflows, while unsigned 127+1 fits.</p></details>
+      <h3>Exercise 7 — Parity examines the low byte</h3>
+      <p>AX=00FFh. Execute <code>ADD AX, 1</code>. Find the result, ZF, PF and AF.</p>
+      <details><summary>Answer to exercise 7</summary><p>AX=0100h; ZF=0 because the word is nonzero; PF=1 because the low byte 00h contains zero set bits; AF=1 because Fh+1 carries. The set bit in the high byte does not affect PF.</p></details>
+      <h3>Exercise 8 — Find invalid instruction forms</h3>
+      <pre><code>MOV AL, BX
+MOV ES, DS
+MOV DS, 1234h
+MOV AX, [SP]
+MOV [BX], [SI]</code></pre>
+      <details><summary>Answer to exercise 8</summary><ul><li>AL/BX have different widths; use <code>MOV AL, BL</code> if the goal is to copy BX's low byte.</li><li>ES/DS need an intermediate 16-bit register.</li><li>Load 1234h into AX, then use <code>MOV DS, AX</code>.</li><li>[SP] is not an 8086 EA form. Design a suitable BP-based or other valid access; changing a register name arbitrarily can change the address.</li><li>MOV does not permit two memory operands. Copy through a register and specify the intended data width.</li></ul></details>
+      <h3>Exercise 9 — Is there enough information?</h3>
+      <p>DS=1000h, BX=0100h. The instruction is <code>MOV AX, [BX]</code>, but memory contents are unspecified. What can you determine?</p>
+      <details><summary>Answer to exercise 9</summary><p>The mode is register indirect; the segment is DS; EA=0100h; the first physical address is 10100h. Two bytes at 10100h and 10101h are read in little-endian order. AX's resulting value is unknown. MOV does not modify the status flags.</p></details>
+      <h3>Exercise 10 — Code length versus data width</h3>
+      <p><code>MOV CL, [BX]</code> encodes as <code>8A 0F</code>. What is its instruction length, and how many data bytes does it read?</p>
+      <details><summary>Answer to exercise 10</summary><p>It has two instruction bytes and reads one data byte because CL is an 8-bit register. Fetching instruction bytes is separate from reading the data operand.</p></details>
+    </section>
+
+    <section id="tu-kiem-tra">
+      <h2>13. Check six essential concepts</h2>
+      <p>Choose one answer per question. Grading includes an explanation and a section to review.</p>
+      <noscript>JavaScript is disabled. The chapter, exercises and answers remain readable. The calculators and automatic quiz grading require JavaScript.</noscript>
+      <form id="quiz" class="interactive">
+        <fieldset><legend>1. How does little-endian store 1234h beginning at 0100h?</legend><label><input type="radio" name="q1" value="a" required>0100h=12h, 0101h=34h</label><label><input type="radio" name="q1" value="b">0100h=34h, 0101h=12h</label><label><input type="radio" name="q1" value="c">0100h=43h, 0101h=21h</label></fieldset>
+        <fieldset><legend>2. DS=1000h, offset=0020h. What is the physical address?</legend><label><input type="radio" name="q2" value="a" required>10020h</label><label><input type="radio" name="q2" value="b">01020h</label><label><input type="radio" name="q2" value="c">10000020h</label></fieldset>
+        <fieldset><legend>3. Which segment does MOV AL, [BP+DI+5] use by default?</legend><label><input type="radio" name="q3" value="a" required>DS</label><label><input type="radio" name="q3" value="b">ES</label><label><input type="radio" name="q3" value="c">SS</label></fieldset>
+        <fieldset><legend>4. For 8-bit ADD, 7Fh+01h, what are CF and OF?</legend><label><input type="radio" name="q4" value="a" required>CF=1, OF=0</label><label><input type="radio" name="q4" value="b">CF=0, OF=1</label><label><input type="radio" name="q4" value="c">CF=0, OF=0</label></fieldset>
+        <fieldset><legend>5. A 16-bit ADD result is 0100h. What is PF?</legend><label><input type="radio" name="q5" value="a" required>0, because the whole word contains one set bit</label><label><input type="radio" name="q5" value="b">1, because the low byte contains zero set bits</label><label><input type="radio" name="q5" value="c">Unknown without examining the high byte</label></fieldset>
+        <fieldset><legend>6. Which instruction is valid on the 8086?</legend><label><input type="radio" name="q6" value="a" required>MOV DS, 1234h</label><label><input type="radio" name="q6" value="b">MOV AX, [SP]</label><label><input type="radio" name="q6" value="c">MOV BYTE PTR [BX], 10</label></fieldset>
+        <button type="submit">Grade &amp; explain</button>
+        <output id="quiz-output" aria-live="polite" aria-atomic="true" hidden></output>
+      </form>
+      <details><summary>Answer key for self-grading or printing</summary><p>1-B: low byte at the lower address. 2-A: 1000h×10h+0020h=10020h. 3-C: BP selects SS. 4-B: signed overflow without unsigned carry. 5-B: parity checks the low byte 00h. 6-C: the memory width is explicit and [BX] is valid.</p></details>
+    </section>
+
+    <section id="tra-cuu">
+      <h2>14. Revision table and references</h2>
+      <div class="table-wrap"><table><thead><tr><th>Topic</th><th>Rule to apply</th></tr></thead><tbody><tr><td>Little-endian</td><td>The low byte occupies the lower address</td></tr><tr><td>Byte-addressable capacity</td><td>n address bits → 2ⁿ bytes</td></tr><tr><td>Real-mode physical address</td><td>segment×10h+offset; original 8086 bus retains 20 bits</td></tr><tr><td>Segment span</td><td>16-bit offsets cover up to 64 KiB; segment bases advance in 16-byte steps</td></tr><tr><td>Default memory segment</td><td>BP-based operand → SS; other ordinary forms here → DS</td></tr><tr><td>MOV width</td><td>AL/AH etc. → byte; AX/BX etc. → word; specify PTR when needed</td></tr><tr><td>ADD flags</td><td>CF: unsigned overflow; OF: signed overflow; PF: parity of the low byte</td></tr><tr><td>MOV behavior</td><td>Copies source into destination; leaves status flags unchanged</td></tr><tr><td>Prefetch queue</td><td>8088: 4 bytes; 8086: 6 bytes</td></tr></tbody></table></div>
+      <h3>Terminology</h3>
+      <p><strong>MSB/LSB:</strong> most/least significant bit. <strong>Nibble:</strong> four bits. <strong>Operand:</strong> an instruction's data or data-location argument. <strong>Immediate:</strong> a constant encoded in an instruction. <strong>Displacement:</strong> a constant added when forming an EA. <strong>EA:</strong> effective address, the calculated offset. <strong>Opcode:</strong> operation code. <strong>Assembler:</strong> software translating assembly source. <strong>ISR:</strong> interrupt service routine. <strong>Prefetch:</strong> fetching instruction bytes ahead of execution.</p>
+      <h3 id="tai-lieu-tham-khao">References</h3>
+      <ol class="references">
+        <li id="ref-video"><a href="https://www.youtube.com/watch?v=zt21WRo_gIo&amp;list=PL1HxRSJMOMPIHywk2YUlyhn5kt6ARwFvd" target="_blank" rel="noopener noreferrer">Nguyễn Huy Hoàng — Microprocessor Engineering, Session 1 (16/03), P1</a>. Lecture source for little-endian, buses, 8086 architecture, segmentation, flags, the IBM PC and addressing modes. The lecture's scope was identified from automatic Vietnamese captions.</li>
+        <li id="ref-slides"><strong>Course slides: Microprocessor_Part1_v2.ppt and Microprocessor_Part2_v2.ppt</strong>, supplied by the learner. Part1 covers number representation, endianness and the system model; Part2 sections 2.1 and 2.3–2.5 cover architecture, memory, addressing and encoding. Part1 names Phạm Ngọc Nam as compiler and Hàn Huy Dũng as lecturer; these slide credits differ from the person teaching the video.</li>
+        <li id="ref-asm1"><a href="https://yassinebridi.github.io/asm-docs/asm_tutorial_01.html" target="_blank" rel="noopener noreferrer">emu8086 — Assembler tutorial, Part 1</a>, hosted in Yassine Bridi's asm-docs. Reference for the concept/example/diagram teaching format, introductory assembly terminology and register names. Its figures and prose are not reproduced in this chapter.</li>
+        <li id="ref-asm2"><a href="https://yassinebridi.github.io/asm-docs/asm_tutorial_02.html" target="_blank" rel="noopener noreferrer">emu8086 — Assembler tutorial, Part 2: Memory Access</a>. Cross-check for MOV operands, widths, valid address-register combinations, default segments and BYTE/WORD PTR. A local copy accompanies the supplied emu8086 documentation.</li>
+        <li id="ref-asm6"><a href="https://yassinebridi.github.io/asm-docs/asm_tutorial_06.html" target="_blank" rel="noopener noreferrer">emu8086 — Assembler tutorial, Part 6: Arithmetic and Logic Instructions</a>. Cross-check for CF/OF and parity of the low result byte. A local copy accompanies the supplied documentation.</li>
+        <li id="ref-intel"><a href="https://bitsavers.org/components/intel/8086/9800722-03_The_8086_Family_Users_Manual_Oct79.pdf" target="_blank" rel="noopener noreferrer">Intel — The 8086 Family User's Manual, October 1979</a>, archived at Bitsavers. Original reference for further study of architecture, instructions and encodings.</li>
+      </ol>
+      <h3>Scope and use of sources</h3>
+      <p>This chapter synthesizes the material by topic for independent study. The lecture and slides define its subject coverage; examples, revision tables, exercises and calculators explain how to apply the rules. CF versus OF, EA versus physical address and DS:DI versus ES:DI are distinguished explicitly to prevent misuse of simplified models.</p>
+      <p>The scope is the original 8086/8088 and the classic IBM PC model. Detailed pin functions, the complete instruction set, interface design and protected mode belong to later chapters. The video ends at the beginning of instruction encoding; the completed example in section 10 also uses Part2 of the slides. Rights to the original source material belong to its respective authors.</p>
+    </section>
+    <footer>Microprocessor Study Guide · English edition · Content and exercises are available offline.</footer>
+  </main>
+</div>
+<script>
+'use strict';
+  function parseHex(text, max) {
+    const value = text.trim();
+    if (!/^(?:0x[0-9a-f]{1,4}|[0-9a-f]{1,4}h?)$/i.test(value)) throw new Error('Enter a valid hexadecimal value, up to 4 digits; for example 80, 80h or 0x80.');
+    const number = Number.parseInt(value.replace(/^0x/i, '').replace(/h$/i, ''), 16);
+    if (number > max) throw new Error('Value exceeds the selected width. The maximum is ' + max.toString(16).toUpperCase() + 'h.');
+    return number;
+  }
+  function hex(number, digits) { return number.toString(16).toUpperCase().padStart(digits, '0') + 'h'; }
+  function physicalAddress(segment, offset) {
+    const total = segment * 16 + offset;
+    return {total, bus: total & 0xFFFFF};
+  }
+  function addFlags(a, b, bits) {
+    const mask = (2 ** bits) - 1;
+    const sign = 2 ** (bits - 1);
+    const result = (a + b) & mask;
+    const ones = (result & 255).toString(2).replace(/0/g, '').length;
+    return {result, CF: Number(a + b > mask), OF: Number((~(a ^ b) & (a ^ result) & sign) !== 0), SF: Number((result & sign) !== 0), ZF: Number(result === 0), AF: Number((a & 15) + (b & 15) > 15), PF: Number(ones % 2 === 0)};
+  }
+  document.getElementById('print').addEventListener('click', () => window.print());
+  const mobileMenu = window.matchMedia('(max-width:768px)');
+  function updateMenu() { document.querySelector('.toc').open = !mobileMenu.matches; }
+  mobileMenu.addEventListener('change', updateMenu);
+  updateMenu();
+  let closedBeforePrint = [];
+  window.addEventListener('beforeprint', () => {
+    closedBeforePrint = [...document.querySelectorAll('details:not([open])')];
+    closedBeforePrint.forEach(detail => { detail.open = true; });
+  });
+  window.addEventListener('afterprint', () => {
+    closedBeforePrint.forEach(detail => { detail.open = false; });
+    closedBeforePrint = [];
+  });
+  document.getElementById('address-form').addEventListener('submit', event => {
+    event.preventDefault();
+    const output = document.getElementById('address-output');
+    try {
+      const segment = parseHex(document.getElementById('segment').value, 65535);
+      const offset = parseHex(document.getElementById('offset').value, 65535);
+      const address = physicalAddress(segment, offset);
+      output.textContent = hex(segment, 4) + ' × 10h + ' + hex(offset, 4) + ' = ' + hex(address.total, 5) + '\nAddress on the 20-bit bus: ' + hex(address.bus, 5) + (address.total > 0xFFFFF ? '\nThe sum exceeds 20 bits; the original 8086/8088 retains the low 20 bits.' : '');
+    } catch (error) { output.textContent = error.message; }
+  });
+  document.getElementById('flags-form').addEventListener('submit', event => {
+    event.preventDefault();
+    const output = document.getElementById('flags-output');
+    try {
+      const bits = Number(document.getElementById('width').value);
+      const a = parseHex(document.getElementById('operand-a').value, 2 ** bits - 1);
+      const b = parseHex(document.getElementById('operand-b').value, 2 ** bits - 1);
+      const flags = addFlags(a, b, bits);
+      output.textContent = hex(a, bits / 4) + ' + ' + hex(b, bits / 4) + ' → ' + hex(flags.result, bits / 4) + ' (' + bits + ' bits)\n' + ['CF', 'OF', 'SF', 'ZF', 'AF', 'PF'].map(name => name + '=' + flags[name]).join(' · ');
+    } catch (error) { output.textContent = error.message; }
+  });
+  const quizAnswers = ['b', 'a', 'c', 'b', 'b', 'c'];
+  const quizReasons = ['The low byte 34h occupies the lower address 0100h. Review section 01.', '1000h × 10h + 0020h = 10020h. Review section 05.', 'A memory address using BP defaults to SS. Review section 09.', '+127 + 1 exceeds the signed range; unsigned 128 is representable. Review section 06.', 'PF checks only the low byte 00h, which contains zero set bits — an even count. Review section 06.', 'BYTE PTR specifies a byte write; [BX] is a valid address form. Review section 08.'];
+  document.getElementById('quiz').addEventListener('submit', event => {
+    event.preventDefault();
+    const answers = new FormData(event.currentTarget);
+    let score = 0;
+    const lines = quizAnswers.map((answer, index) => {
+      const correct = answers.get('q' + (index + 1)) === answer;
+      score += Number(correct);
+      return 'Question ' + (index + 1) + ': ' + (correct ? 'Correct.' : 'Incorrect. Answer ' + answer.toUpperCase() + '.') + ' ' + quizReasons[index];
+    });
+    const output = document.getElementById('quiz-output');
+    output.hidden = false;
+    output.textContent = 'Score: ' + score + '/6\n\n' + lines.join('\n\n');
+  });
+</script>
+</body>
+</html>
