@@ -8,6 +8,8 @@ Self-contained learning and revision documents for Intel 8086/8088 architecture 
 
 ## How to use
 
+[Read note_01 online](https://thanhphan356.github.io/assembly-with-emu-8086/note_01.html) through GitHub Pages.
+
 Download `note_01.html` and open it in a browser. GitHub's file view displays the source rather than the lesson.
 
 Each note contains its own styles and interactive tools, so no installation, internet connection or companion files are needed. Use the contents to navigate, try the worked exercises and quiz, and select **Print / save PDF** for a printable version with answers.

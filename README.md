@@ -6,6 +6,8 @@ I will add notes, exercises, and projects as I learn.
 
 ## Study notes
 
+[Read note_01 online](https://thanhphan356.github.io/assembly-with-emu-8086/note_01.html) — open the lesson directly in your browser.
+
 The [docs folder](docs/README.md) contains study and revision documents.
 
 - [note_01 — 8086 fundamentals](docs/note_01.html): an English guide to architecture, memory, addressing, flags and assembly, with worked exercises and interactive calculators.
