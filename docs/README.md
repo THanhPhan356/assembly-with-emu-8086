@@ -12,9 +12,11 @@ Self-contained learning and revision documents for Intel 8086/8088 architecture 
 
 Download `note_01.html` and open it in a browser. GitHub's file view displays the source rather than the lesson.
 
-Each note contains its own styles and interactive tools, so no installation, internet connection or companion files are needed. Use the contents to navigate, try the worked exercises and quiz, and select **Print / save PDF** for a printable version with answers.
+Each note contains its own styles and interactive tools, so no installation, internet connection or companion files are needed. Select an illustration to view its original resolution. Use the contents to navigate, try the worked exercises and quiz, and select **Print / save PDF** for a printable version with answers.
 
 ## Sources and scope
+
+The guide includes 14 cropped illustrations from the supplied slides, embedded in the HTML. Explanations and captions are in English; original figure labels, including Vietnamese, are preserved. Each figure cites its deck and slide number.
 
 `note_01` is a study chapter based on Nguyễn Huy Hoàng's first microprocessor lecture, the supplied Part1/Part2 slides, and emu8086 tutorials. The note includes topic-level citations and a reference list explaining each source's role, with the Intel 8086 manual listed for further reading.
 
