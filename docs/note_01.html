@@ -88,39 +88,39 @@
 </style>
 </head>
 <body>
-<a class="skip" href="#noi-dung">Skip to the chapter</a>
+<a class="skip" href="#chapter">Skip to the chapter</a>
 <div class="layout">
   <aside><div class="sidebar">
     <span class="brand">MICROPROCESSOR STUDY GUIDE</span>
     <span class="small">Chapter 01 / 8086 fundamentals</span>
     <details class="toc" open><summary>Contents</summary><nav aria-label="Chapter contents"><ol>
-      <li><a href="#bat-dau">00 · Assembly &amp; objectives</a></li>
-      <li><a href="#bieu-dien">01 · Bits, bytes &amp; endianness</a></li>
-      <li><a href="#he-vi-xu-ly">02 · The system &amp; its buses</a></li>
-      <li><a href="#kien-truc">03 · BIU, EU &amp; prefetch</a></li>
-      <li><a href="#thanh-ghi">04 · Register groups</a></li>
-      <li><a href="#phan-doan">05 · Segmented memory</a></li>
-      <li><a href="#co">06 · Flags &amp; operand width</a></li>
+      <li><a href="#introduction">00 · Assembly &amp; objectives</a></li>
+      <li><a href="#number-representation">01 · Bits, bytes &amp; endianness</a></li>
+      <li><a href="#system-and-buses">02 · The system &amp; its buses</a></li>
+      <li><a href="#architecture">03 · BIU, EU &amp; prefetch</a></li>
+      <li><a href="#registers">04 · Register groups</a></li>
+      <li><a href="#segmented-memory">05 · Segmented memory</a></li>
+      <li><a href="#flags">06 · Flags &amp; operand width</a></li>
       <li><a href="#ibm-pc">07 · IBM PC memory &amp; I/O</a></li>
       <li><a href="#mov">08 · Understanding MOV</a></li>
-      <li><a href="#che-do-dia-chi">09 · Addressing modes</a></li>
-      <li><a href="#ma-hoa">10 · Instruction encoding</a></li>
-      <li><a href="#thuc-hanh">11 · emu8086 practice</a></li>
-      <li><a href="#bai-tap">12 · Worked exercises</a></li>
-      <li><a href="#tu-kiem-tra">13 · Knowledge check</a></li>
-      <li><a href="#tra-cuu">14 · Revision &amp; references</a></li>
+      <li><a href="#addressing-modes">09 · Addressing modes</a></li>
+      <li><a href="#instruction-encoding">10 · Instruction encoding</a></li>
+      <li><a href="#practice">11 · emu8086 practice</a></li>
+      <li><a href="#exercises">12 · Worked exercises</a></li>
+      <li><a href="#knowledge-check">13 · Knowledge check</a></li>
+      <li><a href="#revision">14 · Revision &amp; references</a></li>
     </ol></nav></details>
   </div></aside>
-  <main id="noi-dung">
+  <main id="chapter">
     <header>
       <div class="eyebrow">Microprocessor Study Guide · Chapter 01</div>
       <h1>8086 fundamentals: architecture, memory and addressing</h1>
       <p class="lead">A study and revision chapter for assembly beginners and microprocessor students. Each topic develops a concept, states its rules, works through examples and offers questions to test your understanding.</p>
       <p class="small">Scope: Intel 8088/8086, real mode, Intel/MASM syntax and emu8086.</p>
-      <div class="actions"><a class="button" href="#bat-dau">Start reading</a><a class="button" href="#bai-tap">Try the exercises</a><button type="button" id="print">Print / save PDF</button></div>
+      <div class="actions"><a class="button" href="#introduction">Start reading</a><a class="button" href="#exercises">Try the exercises</a><button type="button" id="print">Print / save PDF</button></div>
     </header>
 
-    <section id="bat-dau">
+    <section id="introduction">
       <h2>00. Assembly language and how to study this chapter</h2>
       <h3>What is assembly language?</h3>
       <p>Assembly language represents machine instructions using mnemonics such as <code>MOV</code> and <code>ADD</code>, together with register names such as <code>AX</code>. An assembler translates this source into machine-code bytes that the CPU executes. Instructions operate on particular registers and memory locations, so understanding the processor architecture helps you interpret a program correctly.</p>
@@ -138,10 +138,10 @@ ADD AX, 1        ; add 1 to AX: AX becomes 1235h</code></pre>
       </ul>
       <div class="note"><p><strong>Study route:</strong> read sections 01–05 to build the foundation, then 08–09 to understand memory operands. Study section 06 when starting arithmetic. Use 12–14 for revision. If number systems and registers are already familiar, begin with the memory examples and exercises.</p></div>
       <p><strong>Prerequisites:</strong> basic arithmetic, binary and hexadecimal notation. Previous knowledge of a high-level language is optional. Here, <code>h</code> marks hexadecimal and <code>b</code> marks binary; an unsuffixed constant is decimal in the syntax used by this chapter.</p>
-      <p class="source-note">The chapter's sources appear under <a href="#tai-lieu-tham-khao">References</a>. The explanations and exercises are designed to stand on their own.</p>
+      <p class="source-note">The chapter's sources appear under <a href="#references">References</a>. The explanations and exercises are designed to stand on their own.</p>
     </section>
 
-    <section id="bieu-dien">
+    <section id="number-representation">
       <h2>01. One value, several representations</h2>
       <h3>1.1. Bits, bytes, words and hexadecimal</h3>
       <p>A bit holds 0 or 1. A byte contains 8 bits. In this 8086 chapter, a word contains 16 bits, or two bytes. Each hexadecimal digit represents four bits: two hexadecimal digits describe a byte, and four describe a word.</p>
@@ -169,7 +169,7 @@ ADD AX, 1        ; add 1 to AX: AX becomes 1235h</code></pre>
       <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>.</p>
     </section>
 
-    <section id="he-vi-xu-ly">
+    <section id="system-and-buses">
       <h2>02. The CPU belongs to a larger system</h2>
       <p>A <strong>microprocessor</strong> is the CPU. A <strong>microprocessor system</strong> also needs memory, I/O interfaces and connections between its components. A CPU alone is not a complete computer.</p>
       <div class="table-wrap"><table><thead><tr><th>Component</th><th>Purpose</th><th>Example</th></tr></thead><tbody>
@@ -202,7 +202,7 @@ ADD AX, 1        ; add 1 to AX: AX becomes 1235h</code></pre>
       <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>.</p>
     </section>
 
-    <section id="kien-truc">
+    <section id="architecture">
       <h2>03. The BIU handles the bus; the EU executes instructions</h2>
       <p>The 8088 and 8086 divide their work between two main units. The <strong>Bus Interface Unit (BIU)</strong> generates physical addresses, fetches instruction bytes and performs memory and I/O transactions. The <strong>Execution Unit (EU)</strong> receives instruction bytes from the queue, decodes them and executes operations using its control logic, ALU and registers.</p>
       <figure>
@@ -223,7 +223,7 @@ ADD AX, 1        ; add 1 to AX: AX becomes 1235h</code></pre>
       <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>.</p>
     </section>
 
-    <section id="thanh-ghi">
+    <section id="registers">
       <h2>04. Registers hold data and help locate it</h2>
       <p>The eight 16-bit general-purpose registers are AX, BX, CX, DX, SP, BP, SI and DI. For study, this section separates the four registers with accessible 8-bit halves from the pointer and index registers.</p>
       <h3>4.1. AX, BX, CX and DX</h3>
@@ -262,7 +262,7 @@ MOV AH, 0ABh     ; AX = AB56h</code></pre>
       <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>, <a href="#ref-asm1">[3]</a>.</p>
     </section>
 
-    <section id="phan-doan">
+    <section id="segmented-memory">
       <h2>05. Two 16-bit values locate a 20-bit address</h2>
       <h3>5.1. Segment and offset</h3>
       <p>The 8086 has a 20-bit address space, but its segment and offset registers are 16 bits wide. An address is constructed from a segment value that establishes a base and an offset that counts bytes from that base.</p>
@@ -295,7 +295,7 @@ Address on the 20-bit bus: 12345h</output>
       <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>, <a href="#ref-asm2">[4]</a>.</p>
     </section>
 
-    <section id="co">
+    <section id="flags">
       <h2>06. Flags depend on both the operation and its width</h2>
       <p>FLAGS is a 16-bit register. The original 8086 has nine functional flags discussed here: six status flags and three control flags. Status flags describe results of instructions that update them. Not every instruction changes FLAGS.</p>
       <div class="table-wrap"><table><thead><tr><th>Status flag</th><th>When is it 1?</th><th>Common mistake</th></tr></thead><tbody>
@@ -423,7 +423,7 @@ MOV AX, 0ABCDh      ; a hex constant beginning with a letter needs a leading 0</
       <p class="source-note">References: <a href="#ref-slides">[2]</a>, <a href="#ref-asm2">[4]</a>.</p>
     </section>
 
-    <section id="che-do-dia-chi">
+    <section id="addressing-modes">
       <h2>09. Addressing modes describe where operands come from</h2>
       <p>For a memory operand, calculate the <strong>effective address (EA)</strong>, select the <strong>segment</strong> and determine <strong>byte or word width</strong>. An addressing-mode name describes how the EA is formed. The seven categories below follow the course terminology.</p>
       <div class="table-wrap"><table><thead><tr><th>Mode</th><th>Example</th><th>EA / source location</th><th>Default segment</th></tr></thead><tbody>
@@ -479,7 +479,7 @@ MOV CL, [BP+DI+5]
       <p class="source-note">References: <a href="#ref-video">[1]</a>, <a href="#ref-slides">[2]</a>, <a href="#ref-asm2">[4]</a>.</p>
     </section>
 
-    <section id="ma-hoa">
+    <section id="instruction-encoding">
       <h2>10. The assembler produces machine-code bytes</h2>
       <p>The CPU does not interpret the letters “MOV” as human-readable source. The assembler selects an encoding suitable for the operands and emits bytes describing the operation, registers, address calculation and any required constants.</p>
       <h3>10.1. Fields in the register ↔ memory MOV form</h3>
@@ -497,7 +497,7 @@ MOV CL, [BX] → 8A 0F</code></pre>
       <p class="source-note">Reference: <a href="#ref-slides">[2]</a>.</p>
     </section>
 
-    <section id="thuc-hanh">
+    <section id="practice">
       <h2>11. Observe each instruction in emu8086</h2>
       <p>Use <strong>Single Step</strong> to examine the state after each instruction. Predict the register values and memory bytes before executing, then compare. Running the entire program at once hides useful intermediate states.</p>
       <h3>11.1. Write a word, then read its bytes</h3>
@@ -541,7 +541,7 @@ ret</code></pre>
       <p class="source-note">References: <a href="#ref-asm2">[4]</a>, <a href="#ref-asm6">[5]</a>.</p>
     </section>
 
-    <section id="bai-tap">
+    <section id="exercises">
       <h2>12. Exercises with worked answers</h2>
       <p>Apply the chapter's rules and write an explanation before opening each answer. If the question omits required data, state what can be determined and what remains unknown.</p>
       <h3>Exercise 1 — Reconstruct a word</h3>
@@ -580,7 +580,7 @@ MOV [BX], [SI]</code></pre>
       <details><summary>Answer to exercise 10</summary><p>It has two instruction bytes and reads one data byte because CL is an 8-bit register. Fetching instruction bytes is separate from reading the data operand.</p></details>
     </section>
 
-    <section id="tu-kiem-tra">
+    <section id="knowledge-check">
       <h2>13. Check six essential concepts</h2>
       <p>Choose one answer per question. Grading includes an explanation and a section to review.</p>
       <noscript>JavaScript is disabled. The chapter, exercises and answers remain readable. The calculators and automatic quiz grading require JavaScript.</noscript>
@@ -597,12 +597,12 @@ MOV [BX], [SI]</code></pre>
       <details><summary>Answer key for self-grading or printing</summary><p>1-B: low byte at the lower address. 2-A: 1000h×10h+0020h=10020h. 3-C: BP selects SS. 4-B: signed overflow without unsigned carry. 5-B: parity checks the low byte 00h. 6-C: the memory width is explicit and [BX] is valid.</p></details>
     </section>
 
-    <section id="tra-cuu">
+    <section id="revision">
       <h2>14. Revision table and references</h2>
       <div class="table-wrap"><table><thead><tr><th>Topic</th><th>Rule to apply</th></tr></thead><tbody><tr><td>Little-endian</td><td>The low byte occupies the lower address</td></tr><tr><td>Byte-addressable capacity</td><td>n address bits → 2ⁿ bytes</td></tr><tr><td>Real-mode physical address</td><td>segment×10h+offset; original 8086 bus retains 20 bits</td></tr><tr><td>Segment span</td><td>16-bit offsets cover up to 64 KiB; segment bases advance in 16-byte steps</td></tr><tr><td>Default memory segment</td><td>BP-based operand → SS; other ordinary forms here → DS</td></tr><tr><td>MOV width</td><td>AL/AH etc. → byte; AX/BX etc. → word; specify PTR when needed</td></tr><tr><td>ADD flags</td><td>CF: unsigned overflow; OF: signed overflow; PF: parity of the low byte</td></tr><tr><td>MOV behavior</td><td>Copies source into destination; leaves status flags unchanged</td></tr><tr><td>Prefetch queue</td><td>8088: 4 bytes; 8086: 6 bytes</td></tr></tbody></table></div>
       <h3>Terminology</h3>
       <p><strong>MSB/LSB:</strong> most/least significant bit. <strong>Nibble:</strong> four bits. <strong>Operand:</strong> an instruction's data or data-location argument. <strong>Immediate:</strong> a constant encoded in an instruction. <strong>Displacement:</strong> a constant added when forming an EA. <strong>EA:</strong> effective address, the calculated offset. <strong>Opcode:</strong> operation code. <strong>Assembler:</strong> software translating assembly source. <strong>ISR:</strong> interrupt service routine. <strong>Prefetch:</strong> fetching instruction bytes ahead of execution.</p>
-      <h3 id="tai-lieu-tham-khao">References</h3>
+      <h3 id="references">References</h3>
       <ol class="references">
         <li id="ref-video"><a href="https://www.youtube.com/watch?v=zt21WRo_gIo&amp;list=PL1HxRSJMOMPIHywk2YUlyhn5kt6ARwFvd" target="_blank" rel="noopener noreferrer">Nguyễn Huy Hoàng — Microprocessor Engineering, Session 1 (16/03), P1</a>. Lecture source for little-endian, buses, 8086 architecture, segmentation, flags, the IBM PC and addressing modes. The lecture's scope was identified from automatic Vietnamese captions.</li>
         <li id="ref-slides"><strong>Course slides: Microprocessor_Part1_v2.ppt and Microprocessor_Part2_v2.ppt</strong>, supplied by the learner. Part1 covers number representation, endianness and the system model; Part2 sections 2.1 and 2.3–2.5 cover architecture, memory, addressing and encoding. Part1 names Phạm Ngọc Nam as compiler and Hàn Huy Dũng as lecturer; these slide credits differ from the person teaching the video.</li>
