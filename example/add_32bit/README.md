@@ -1,60 +1,60 @@
-# Cộng hai số nguyên 32 bit
+# 32-bit Integer Addition
 
-## Đề bài
+## Problem Statement
 
-Viết chương trình cộng hai số nguyên **không dấu 32 bit** bằng C và Assembly; bản Assembly chạy trên emu8086. Lưu 32 bit thấp của tổng và tách bit nhớ thứ 33 nếu phép cộng vượt phạm vi 32 bit.
+Write C and Assembly programs to add two **unsigned 32-bit integers**. The Assembly program runs in emu8086. Store the lower 32 bits of the sum and extract the 33rd bit as a carry if the addition exceeds the 32-bit range.
 
-Mỗi số đầu vào thuộc khoảng `0` đến `4294967295`. Hai chương trình có cùng phép tính; bản C nhập số hệ 10 từ bàn phím, bản Assembly khai báo sẵn dữ liệu.
+Each input must be between `0` and `4294967295`. Both programs perform the same calculation. The C program reads decimal inputs from the keyboard; the Assembly program uses predefined values.
 
 ## Code
 
-- [Code C](add_32bit.c): dùng `uint32_t`, tính `tong = a + b` và `nho = (tong < a)`.
-- [Code Assembly cho emu8086](add_32bit.asm): chia mỗi số thành hai word 16 bit, cộng phần thấp bằng `ADD`, phần cao kèm bit nhớ bằng `ADC`.
+- [C program](add_32bit.c): uses `uint32_t`, calculates `sum = a + b`, and detects carry with `carry = (sum < a)`.
+- [Assembly program for emu8086](add_32bit.asm): splits each input into two 16-bit words, adds the low words with `ADD`, and adds the high words plus carry with `ADC`.
 
-## Chạy bản C
+## Running the C Program
 
-Biên dịch với GCC:
+Compile with GCC:
 
 ```sh
 gcc -std=c11 -Wall -Wextra add_32bit.c -o add_32bit
 ```
 
-Chạy `./add_32bit` trên Linux/macOS hoặc `.\add_32bit.exe` trên PowerShell. Nhập hai số hệ 10 hợp lệ trong phạm vi đã nêu.
+Run `./add_32bit` on Linux/macOS or `.\add_32bit.exe` in PowerShell. Enter two valid decimal integers within the range specified above.
 
-Ví dụ nhập:
+Example input:
 
 ```text
 4294967295 1
 ```
 
-Kết quả:
+Output, after the input prompt:
 
 ```text
-Tong 32 bit = 0
-Bit nho = 1
+32-bit sum = 0
+Carry bit = 1
 ```
 
-## Chạy bản Assembly
+## Running the Assembly Program
 
-Mở `add_32bit.asm` trong emu8086, chọn **Emulate**, rồi chạy từng lệnh để xem thanh ghi và bộ nhớ. Chương trình lưu kết quả vào biến, không in ra màn hình.
+Open `add_32bit.asm` in emu8086, select **Emulate**, and step through the instructions to inspect registers and memory. The program stores its results in variables and does not print them.
 
-Mỗi số được khai báo theo thứ tự **word thấp trước, word cao sau**:
+Each input is declared with the **low word first, followed by the high word**:
 
 ```asm
 a dw 0FFFFh, 0FFFFh   ; FFFFFFFFh
 b dw 0001h, 0000h     ; 00000001h
 ```
 
-- `[a]` đọc word thấp; `[a + 2]` đọc word cao, vì mỗi word chiếm 2 byte.
-- `ADD` tạo cờ nhớ `CF`; `ADC` cộng thêm `CF`.
-- `MOV` giữ nguyên `CF`. Không thay `mov cx, 0` bằng `xor cx, cx`, vì `XOR` xóa cờ nhớ.
-- Tổng 32 bit nằm trong `DX:AX` và được lưu vào `sum`; bit nhớ cuối nằm trong `CX` và được lưu vào `nho`.
+- `[a]` reads the low word; `[a + 2]` reads the high word, because each word occupies 2 bytes.
+- `ADD` produces the carry flag `CF`; `ADC` includes `CF` in the next addition.
+- `MOV` preserves `CF`. Do not replace `mov cx, 0` with `xor cx, cx`, because `XOR` clears the carry flag.
+- The 32-bit sum is held in `DX:AX` and stored in `sum`. The final carry is held in `CX` and stored in `carry`.
 
-Với dữ liệu trên: `sum = 00000000h`, `nho = 1`. Tổng đầy đủ là `100000000h` (4294967296).
+For the values above, `sum = 00000000h` and `carry = 1`. The full result is `100000000h` (4294967296).
 
-## Một số kết quả đối chiếu
+## Expected Results
 
-| A (hệ 10) | B (hệ 10) | Tổng 32 bit (hệ 10) | Bit nhớ |
+| A (decimal) | B (decimal) | 32-bit Sum (decimal) | Carry |
 |---|---|---|---|
 | 0 | 0 | 0 | 0 |
 | 10 | 20 | 30 | 0 |
@@ -62,4 +62,4 @@ Với dữ liệu trên: `sum = 00000000h`, `nho = 1`. Tổng đầy đủ là `
 | 4294967295 | 1 | 0 | 1 |
 | 4294967295 | 4294967295 | 4294967294 | 1 |
 
-Trong bản Assembly, đổi hai word của `a` và `b` để thử các trường hợp khác.
+In the Assembly program, change the two words of `a` and `b` to try other inputs.

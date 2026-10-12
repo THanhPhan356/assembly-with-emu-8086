@@ -3,19 +3,19 @@
 #include <inttypes.h>
 
 int main(void) {
-    uint32_t a, b, tong;
-    uint8_t nho;
+    uint32_t a, b, sum;
+    uint8_t carry;
 
-    printf("Nhap 2 so nguyen khong dau 32 bit: ");
+    printf("Enter two unsigned 32-bit integers: ");
     if (scanf("%" SCNu32 " %" SCNu32, &a, &b) != 2)
         return 1;
 
-    /* Giu 32 bit thap va tach bit nho, tuong duong ban Assembly. */
-    tong = a + b;
-    nho = (tong < a);
+    /* Keep the lower 32 bits and extract carry, as in the Assembly version. */
+    sum = a + b;
+    carry = (sum < a);
 
-    printf("Tong 32 bit = %" PRIu32 "\n", tong);
-    printf("Bit nho = %u\n", (unsigned)nho);
+    printf("32-bit sum = %" PRIu32 "\n", sum);
+    printf("Carry bit = %u\n", (unsigned)carry);
 
     return 0;
 }

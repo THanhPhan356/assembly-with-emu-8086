@@ -1,8 +1,8 @@
-# Ví dụ C và Assembly cho emu8086
+# C and Assembly Examples for emu8086
 
-Mỗi bài nằm trong một thư mục riêng, kèm README đề bài và hướng dẫn chạy.
+Each example has its own folder, with a README containing the problem statement and instructions for running the program.
 
-| Ví dụ | Nội dung | Code |
+| Example | Description | Code |
 |---|---|---|
-| [Cộng hai số nguyên 32 bit](add_32bit/README.md) | Cộng hai số không dấu 32 bit, tách bit nhớ | C và Assembly |
-| [Bài 3: Thao tác bit 2 của AL](bit2_al/README.md) | Kiểm tra, bật, tắt và đảo bit 2 | Assembly |
+| [32-bit Integer Addition](add_32bit/README.md) | Add two unsigned 32-bit integers and extract the carry bit | C and Assembly |
+| [Exercise 3: Bit 2 Operations on AL](bit2_al/README.md) | Test, set, clear, and toggle bit 2 | Assembly |

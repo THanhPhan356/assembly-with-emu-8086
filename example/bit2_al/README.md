@@ -1,31 +1,31 @@
-# Bài 3: Kiểm tra, bật, tắt và đảo bit 2 của AL
+# Exercise 3: Test, Set, Clear, and Toggle Bit 2 of AL
 
-## Đề bài
+## Problem Statement
 
-AL có 8 bit, đánh số từ 0 đến 7: bit 0 là LSB, bit 7 là MSB. Viết đoạn chương trình kiểm tra, bật, tắt và đảo bit 2 của AL; các bit khác giữ nguyên.
+AL contains 8 bits, numbered 0 through 7. Bit 0 is the LSB; bit 7 is the MSB. Write a program to test, set, clear, and toggle bit 2 of AL while leaving the other bits unchanged.
 
-## Code emu8086
+## emu8086 Code
 
 [bit2_al.asm](bit2_al.asm)
 
-Bit 2 có mặt nạ `00000100b` (`04h`); mặt nạ để tắt bit 2 là `11111011b` (`FBh`).
+The mask for bit 2 is `00000100b` (`04h`). The mask for clearing bit 2 is `11111011b` (`FBh`).
 
-| Thao tác | Lệnh | Ý nghĩa |
+| Operation | Instruction | Effect |
 |---|---|---|
-| Kiểm tra | `test al, 00000100b` | Không đổi AL; ZF = 1 nếu bit 2 là 0, ZF = 0 nếu bit 2 là 1 |
-| Bật | `or al, 00000100b` | Đặt bit 2 thành 1 |
-| Tắt | `and al, 11111011b` | Đặt bit 2 thành 0 |
-| Đảo | `xor al, 00000100b` | Đổi bit 2 từ 0 sang 1 hoặc từ 1 sang 0 |
+| Test | `test al, 00000100b` | AL is unchanged; ZF = 1 if bit 2 is 0, ZF = 0 if bit 2 is 1 |
+| Set | `or al, 00000100b` | Set bit 2 to 1 |
+| Clear | `and al, 11111011b` | Set bit 2 to 0 |
+| Toggle | `xor al, 00000100b` | Change bit 2 from 0 to 1 or from 1 to 0 |
 
-## Cách chạy và kết quả
+## Running the Program and Expected Results
 
-Mở file trong emu8086, chọn **Emulate** và chạy từng lệnh. Xem cờ `ZF` ngay sau `TEST`, vì các lệnh tiếp theo thay đổi cờ.
+Open the file in emu8086, select **Emulate**, and step through each instruction. Inspect `ZF` immediately after `TEST`, because subsequent instructions change the flags.
 
-Với `AL = 00001000b`, chuỗi kết quả là:
+Starting with `AL = 00001000b`:
 
-- Sau `TEST`: AL giữ nguyên `00001000b`, ZF = 1.
-- Sau `OR`: AL = `00001100b`.
-- Sau `AND`: AL = `00001000b`.
-- Sau `XOR`: AL = `00001100b`.
+- After `TEST`: AL remains `00001000b`, ZF = 1.
+- After `OR`: AL = `00001100b`.
+- After `AND`: AL = `00001000b`.
+- After `XOR`: AL = `00001100b`.
 
-Các thao tác được thực hiện lần lượt trên cùng AL. Chương trình không in ra màn hình.
+The operations run sequentially on the same AL value. The program does not print output.
