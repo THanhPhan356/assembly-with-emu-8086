@@ -8,8 +8,11 @@ I will add notes, exercises, and projects as I learn.
 
 [Read note_01 online](https://thanhphan356.github.io/assembly-with-emu-8086/note_01.html) — open the lesson directly in your browser.
 
+[Read note_02 online](https://thanhphan356.github.io/assembly-with-emu-8086/note_02.html) — continue with instruction encoding, data transfer, pointers and stacks.
+
 The [docs folder](docs/README.md) contains study and revision documents.
 
 - [note_01 — 8086 fundamentals](docs/note_01.html): an English guide to architecture, memory, addressing, flags and assembly, with worked exercises and interactive calculators.
+- [note_02 — Data transfer and stacks](docs/note_02.html): session 2 notes with 8 original slide illustrations, MOV encodings, pointer and stack traces, 3 practice programs and a revision quiz.
 
-Download the HTML file and open it in a browser. It works offline and needs no additional files. Sources are listed inside each note; sample programs still need verification in emu8086.
+Download a note's HTML file and open it in a browser. Each note works offline and needs no additional files. Sources and validation limits are listed inside each note; the programs still need a walkthrough in the emu8086 application.
