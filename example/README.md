@@ -8,3 +8,4 @@ Each example has its own folder, with a README containing the problem statement 
 | [Exercise 3: Bit 2 Operations on AL](bit2_al/README.md) | Test, set, clear, and toggle bit 2 | Assembly |
 | [Absolute Values of an Array](abs_array/README.md) | Compute unsigned magnitudes using NEG or NOT + INC | Assembly |
 | [Converting a While Loop to Assembly](while_abs_array/README.md) | Compute absolute values of byte elements with an explicit while loop | Assembly |
+| [Addition, Subtraction, and Binary Output](add_subtract/README.md) | Trace registers and flags, explain instruction timings, and print 14 in binary | Assembly, C snippets, and report |
