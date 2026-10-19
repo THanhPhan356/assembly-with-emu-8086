@@ -9,3 +9,4 @@ Each example has its own folder, with a README containing the problem statement 
 | [Absolute Values of an Array](abs_array/README.md) | Compute unsigned magnitudes using NEG or NOT + INC | Assembly |
 | [Converting a While Loop to Assembly](while_abs_array/README.md) | Compute absolute values of byte elements with an explicit while loop | Assembly |
 | [Addition, Subtraction, and Binary Output](add_subtract/README.md) | Trace registers and flags, explain instruction timings, and print 14 in binary | Assembly, C snippets, and report |
+| [20-digit Integer Addition](add_20digit/README.md) | Add two decimal integers of up to 20 digits using five 16-bit words and carry | C and Assembly |
