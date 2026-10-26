@@ -80,7 +80,7 @@
     @media (max-width:400px) { body { font-size:16px; } nav ol { grid-template-columns:1fr; } main { padding:1.5rem 1rem; } .lab { padding:1rem; } }
     @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
     @media print { body { background:white; font-size:11pt; } .layout { display:block; } aside,.actions,.interactive,noscript,.skip { display:none; } main { padding:0; } section { padding-top:1.5rem; } h2,h3,summary { break-after:avoid; } pre,figure,tr { break-inside:avoid; } pre { white-space:pre-wrap; background:#f3f3f3; color:#111; } a { color:inherit; } details { border:0; padding:0; } details> :not(summary) { display:block !important; } .table-wrap { overflow:visible; } }
-  
+
 .source-note { color:var(--muted); font-size:.85rem; margin-top:1.5rem; }
 .register-layout td { text-align:center; font-family:Consolas,monospace; }
 .references li { margin-bottom:1rem; }
@@ -115,7 +115,7 @@
       <li><a href="#ibm-pc">07 · IBM PC memory &amp; I/O</a></li>
       <li><a href="#mov">08 · Understanding MOV</a></li>
       <li><a href="#addressing-modes">09 · Addressing modes</a></li>
-      <li><a href="#instruction-encoding">10 · Instruction encoding</a></li>
+      <li><a href="#instruction-encoding">10 · Instruction encoding &amp; worked bytes</a></li>
       <li><a href="#practice">11 · emu8086 practice</a></li>
       <li><a href="#exercises">12 · Worked exercises</a></li>
       <li><a href="#knowledge-check">13 · Knowledge check</a></li>
@@ -127,7 +127,7 @@
       <div class="eyebrow">Microprocessor Study Guide · Chapter 01</div>
       <h1>8086 fundamentals: architecture, memory and addressing</h1>
       <p class="lead">A study and revision chapter for assembly beginners and microprocessor students. Each topic develops a concept, states its rules, works through examples and offers questions to test your understanding.</p>
-      <p class="small">Scope: Intel 8088/8086, real mode, Intel/MASM syntax and emu8086.</p>
+      <p class="small">Scope: session 1, parts 1 and 2 · Intel 8088/8086 · real mode · Intel/MASM syntax · emu8086.</p>
       <div class="actions"><a class="button" href="#introduction">Start reading</a><a class="button" href="#exercises">Try the exercises</a><button type="button" id="print">Print / save PDF</button></div>
       <p class="small">Select a slide illustration to view it at its original resolution.</p>
     </header>
@@ -151,7 +151,8 @@ ADD AX, 1        ; add 1 to AX: AX becomes 1235h</code></pre>
       <div class="note"><p><strong>Study route:</strong> read sections 01–05 to build the foundation, then 08–09 to understand memory operands. Study section 06 when starting arithmetic. Use 12–14 for revision. If number systems and registers are already familiar, begin with the memory examples and exercises.</p></div>
       <p><strong>Prerequisites:</strong> basic arithmetic, binary and hexadecimal notation. Previous knowledge of a high-level language is optional. Here, <code>h</code> marks hexadecimal and <code>b</code> marks binary; an unsuffixed constant is decimal in the syntax used by this chapter.</p>
       <p class="source-note">The chapter's sources appear under <a href="#references">References</a>. The explanations and exercises are designed to stand on their own.</p>
-    </section>
+    <div class="note"><p><strong>Session 1 coverage:</strong> <a href="https://www.youtube.com/watch?v=zt21WRo_gIo">Part 1</a> develops the fundamentals. <a href="https://www.youtube.com/watch?v=V-i9OKeEW3A">Part 2 (27:00)</a> continues instruction encoding. Section 10 now includes both directions of MOV, byte and word displacements, register-to-register MOV and the remaining classroom examples.</p></div>
+</section>
 
     <section id="number-representation">
       <h2>01. One value, several representations</h2>
@@ -582,7 +583,41 @@ MOV CL, [BX] → 8A 0F</code></pre>
       </figure>
       <p>This instruction occupies two code bytes but reads one data byte. Instruction length and operand width are separate properties. A two-byte instruction does not necessarily access a word.</p>
       <p class="source-note">Reference: <a href="#ref-slides">[2]</a>.</p>
-    </section>
+
+<h3 id="encoding-lookup">10.3. Look up registers and effective addresses</h3>
+<p>The same three register bits name different registers at byte and word widths. Use this corrected table, including SP=100, BP=101, SI=110 and DI=111 for w=1. The supplied slide 45 contains misplaced entries for some word registers.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">REG or register-mode R/M</th><th scope="col">w=0: byte</th><th scope="col">w=1: word</th></tr></thead><tbody><tr><td><code>000</code></td><td>AL</td><td>AX</td></tr><tr><td><code>001</code></td><td>CL</td><td>CX</td></tr><tr><td><code>010</code></td><td>DL</td><td>DX</td></tr><tr><td><code>011</code></td><td>BL</td><td>BX</td></tr><tr><td><code>100</code></td><td>AH</td><td>SP</td></tr><tr><td><code>101</code></td><td>CH</td><td>BP</td></tr><tr><td><code>110</code></td><td>DH</td><td>SI</td></tr><tr><td><code>111</code></td><td>BH</td><td>DI</td></tr></tbody></table></div><div class="table-wrap"><table><thead><tr><th scope="col">Memory R/M</th><th scope="col">Effective offset before displacement</th><th scope="col">Default segment</th></tr></thead><tbody><tr><td>000</td><td>BX+SI</td><td>DS</td></tr><tr><td>001</td><td>BX+DI</td><td>DS</td></tr><tr><td>010</td><td>BP+SI</td><td>SS</td></tr><tr><td>011</td><td>BP+DI</td><td>SS</td></tr><tr><td>100</td><td>SI</td><td>DS</td></tr><tr><td>101</td><td>DI</td><td>DS</td></tr><tr><td>110</td><td>BP when MOD=01/10; direct disp16 when MOD=00</td><td>SS for BP, DS for the direct form</td></tr><tr><td>111</td><td>BX</td><td>DS</td></tr></tbody></table></div>
+<p>When MOD=11, R/M uses the register table instead of the address table. Do not select MOD=00 merely because no displacement is written: it would request memory, not the second register.</p>
+<h3 id="encoding-direction">10.4. Reverse the direction: MOV [BX],CL</h3>
+<p>REG still names CL=001, and R/M still selects [BX]=111. The memory address has no displacement, so MOD=00. CL now supplies the value, so d changes to 0. Its width remains one byte, so w=0.</p>
+<pre><code>MOV CL,[BX]: 100010 1 0 | 00 001 111 -&gt; 8A 0F
+MOV [BX],CL: 100010 0 0 | 00 001 111 -&gt; 88 0F</code></pre>
+<p>Only the direction bit changes. The first instruction reads DS:BX into CL; the second stores CL at DS:BX. Both have two code bytes and one data byte. Neither changes FLAGS.</p>
+<p class="source-note">Lecture, <a href="https://www.youtube.com/watch?v=V-i9OKeEW3A&amp;t=0s">Part 2, 00:00–05:00</a>. Approximate timestamps from Vietnamese automatic captions.</p>
+<h3 id="encoding-displacements">10.5. Encode displacements without changing the intended address</h3>
+<p>For <code>MOV [SI+0F3h],CL</code>, d=0 and w=0 produce opcode 88h. REG=CL=001 and R/M=SI=100. The remaining choice is the displacement width.</p>
+<div class="note warning"><p><strong>Correction to the example around part 2, 08:00:</strong> the written positive displacement +0F3h is +243, outside the signed disp8 range −128..+127. Its correct positive encoding uses MOD=10 and the two displacement bytes F3h,00h. MOD=01 with F3h instead means −13.</p></div>
+<div class="table-wrap"><table><thead><tr><th scope="col">Instruction</th><th scope="col">MOD REG R/M</th><th scope="col">Code bytes</th><th scope="col">Offset when SI=1000h</th></tr></thead><tbody><tr><td><code>MOV [SI+0F3h],CL</code></td><td><code>10 001 100</code></td><td><code>88 8C F3 00</code></td><td>10F3h</td></tr><tr><td><code>MOV [SI-0Dh],CL</code></td><td><code>01 001 100</code></td><td><code>88 4C F3</code></td><td>0FF3h</td></tr><tr><td><code>MOV [SI+0EEFFh],CL</code></td><td><code>10 001 100</code></td><td><code>88 8C FF EE</code></td><td>FEFFh</td></tr></tbody></table></div>
+<p>A leading zero in <code>0F3h</code> or <code>0EEFFh</code> makes a hexadecimal constant beginning with a letter unambiguous to the assembler. It does not choose the displacement width. For a word displacement, emit its low byte first: EEFFh becomes FFh followed by EEh.</p>
+<p>The lecture also varies the displacement to FFFFh. The explicit disp16 form is <code>88 8C FF FF</code>. Because effective offsets wrap to 16 bits, adding FFFFh has the same effect as subtracting 1. An assembler can therefore choose the shorter equivalent <code>88 4C FF</code>, using signed disp8=−1. Multiple byte sequences may implement the same address calculation.</p>
+<p class="source-note">Lecture, <a href="https://www.youtube.com/watch?v=V-i9OKeEW3A&amp;t=300s">Part 2, 05:00–15:00</a>. Approximate timestamps from Vietnamese automatic captions.</p>
+<h3>10.6. Encode MOV BP,SP with register mode</h3>
+<p>Choose REG to name the destination BP=101, d=1 and w=1. Since both operands are registers, MOD=11; R/M names SP=100. No displacement follows.</p>
+<pre><code>Byte 1: 100010 1 1 = 8Bh
+Byte 2: 11 101 100 = ECh
+MOV BP,SP -&gt; 8B EC</code></pre>
+<p>The lecture uses the convention d=1 and REG=destination for this example. It is not a processor restriction: <code>89 E5</code> describes the same transfer with d=0, REG=SP and R/M=BP. Comparing emulators should allow either valid encoding.</p>
+<p class="source-note">Lecture, <a href="https://www.youtube.com/watch?v=V-i9OKeEW3A&amp;t=900s">Part 2, 15:00–20:00</a>. Approximate timestamps from Vietnamese automatic captions.</p>
+<h3>10.7. Finish the indexed-load examples</h3>
+<div class="table-wrap"><table><thead><tr><th scope="col">Step</th><th scope="col"><code>MOV DL,[DI+1]</code></th><th scope="col"><code>MOV BP,[DI+1000h]</code></th></tr></thead><tbody><tr><td>Direction / width</td><td>d=1, w=0 → 8Ah</td><td>d=1, w=1 → 8Bh</td></tr><tr><td>MOD</td><td>01: +1 fits in signed disp8</td><td>10: +1000h needs disp16</td></tr><tr><td>REG</td><td>DL=010</td><td>BP=101</td></tr><tr><td>R/M</td><td>DI=101</td><td>DI=101</td></tr><tr><td>Second byte</td><td>01 010 101 → 55h</td><td>10 101 101 → ADh</td></tr><tr><td>Displacement bytes</td><td>01</td><td>00 10</td></tr><tr><td>Complete instruction</td><td>8A 55 01, three bytes</td><td>8B AD 00 10, four bytes</td></tr></tbody></table></div>
+<p>The destination BP in the second instruction does not select SS for the source. DI supplies the address, so the source still defaults to DS. The first instruction reads one data byte; the second reads a little-endian word at DS:(DI+1000h).</p>
+<p class="source-note">Lecture, <a href="https://www.youtube.com/watch?v=V-i9OKeEW3A&amp;t=1200s">Part 2, 20:00–26:00</a>. Approximate timestamps from Vietnamese automatic captions.</p>
+<h3>10.8. A repeatable encoding checklist</h3>
+<ol><li>Identify the exact instruction family and operand width.</li><li>Choose which operand REG describes; set d consistently.</li><li>Select MOD=11 for a register pair, otherwise select the memory R/M form.</li><li>Check the signed range before selecting disp8. Treat the direct-address MOD=00,R/M=110 exception separately.</li><li>Append low displacement byte before high byte, and count all emitted bytes.</li><li>Decode the finished bytes back into operands and compare the effective address with the source.</li></ol>
+<p>Section 10 completes session 1. <a href="note_02.html#encoding-fields">Note 02</a> revisits these encodings and adds the direct-address/plain-BP distinction before moving to data transfer and arithmetic.</p>
+<p class="source-note">Sources: <a href="#ref-video-part2">session 1, part 2</a>; Part2 slides 44–46; <a href="#ref-intel">Intel encoding tables</a>. Byte sequences were independently assembled and checked with a 16-bit x86 emulator. Instruction length and the signed displacement correction are distinguished explicitly from the lecture's simplified derivation.</p>
+
+</section>
 
     <section id="practice">
       <h2>11. Observe each instruction in emu8086</h2>
@@ -665,10 +700,11 @@ MOV [BX], [SI]</code></pre>
       <h3>Exercise 10 — Code length versus data width</h3>
       <p><code>MOV CL, [BX]</code> encodes as <code>8A 0F</code>. What is its instruction length, and how many data bytes does it read?</p>
       <details><summary>Answer to exercise 10</summary><p>It has two instruction bytes and reads one data byte because CL is an 8-bit register. Fetching instruction bytes is separate from reading the data operand.</p></details>
-    </section>
+    <h3>Exercise 11 — Reverse a memory transfer</h3><p>Encode <code>MOV [BX],CL</code> and compare its bytes with <code>MOV CL,[BX]</code>.</p><details><summary>Answer to exercise 11</summary><p>The store is 88 0F; the load is 8A 0F. REG=001 and R/M=111 stay the same. The d bit changes from 1 to 0. Both transfer one byte.</p></details><h3>Exercise 12 — Check signed displacement before counting bytes</h3><p>SI=1000h. Encode the positive displacement in <code>MOV [SI+0F3h],CL</code>. Would <code>88 4C F3</code> access the same byte?</p><details><summary>Answer to exercise 12</summary><p>Use 88 8C F3 00, with MOD=10, for DS:10F3h. The shorter 88 4C F3 uses signed −13 and writes to DS:0FF3h. Positive 243 does not fit disp8.</p></details><h3>Exercise 13 — Decode a register pair</h3><p>Decode <code>8B EC</code>. Explain why the second byte cannot start with MOD=00.</p><details><summary>Answer to exercise 13</summary><p>8Bh gives d=1,w=1. ECh is 11 101 100, so REG=BP and R/M=SP: MOV BP,SP. MOD=00 would select a memory source rather than SP.</p></details><h3>Exercise 14 — Place displacement bytes and choose the source segment</h3><p>Encode <code>MOV BP,[DI+1000h]</code>. Give its instruction length, data width and default source segment.</p><details><summary>Answer to exercise 14</summary><p>8B AD 00 10: four code bytes, a two-byte data read through DS. DI determines the memory addressing form; destination BP does not change that default segment.</p></details>
+</section>
 
     <section id="knowledge-check">
-      <h2>13. Check six essential concepts</h2>
+      <h2>13. Check eight essential concepts</h2>
       <p>Choose one answer per question. Grading includes an explanation and a section to review.</p>
       <noscript>JavaScript is disabled. The chapter, exercises and answers remain readable. The calculators and automatic quiz grading require JavaScript.</noscript>
       <form id="quiz" class="interactive">
@@ -678,15 +714,16 @@ MOV [BX], [SI]</code></pre>
         <fieldset><legend>4. For 8-bit ADD, 7Fh+01h, what are CF and OF?</legend><label><input type="radio" name="q4" value="a" required>CF=1, OF=0</label><label><input type="radio" name="q4" value="b">CF=0, OF=1</label><label><input type="radio" name="q4" value="c">CF=0, OF=0</label></fieldset>
         <fieldset><legend>5. A 16-bit ADD result is 0100h. What is PF?</legend><label><input type="radio" name="q5" value="a" required>0, because the whole word contains one set bit</label><label><input type="radio" name="q5" value="b">1, because the low byte contains zero set bits</label><label><input type="radio" name="q5" value="c">Unknown without examining the high byte</label></fieldset>
         <fieldset><legend>6. Which instruction is valid on the 8086?</legend><label><input type="radio" name="q6" value="a" required>MOV DS, 1234h</label><label><input type="radio" name="q6" value="b">MOV AX, [SP]</label><label><input type="radio" name="q6" value="c">MOV BYTE PTR [BX], 10</label></fieldset>
-        <button type="submit">Grade &amp; explain</button>
+        <fieldset><legend>7. What does displacement byte F3h mean when MOD=01?</legend><label><input type="radio" name="q7" value="a" required>+243</label><label><input type="radio" name="q7" value="b">−13, sign-extended to 16 bits</label><label><input type="radio" name="q7" value="c">A direct physical address</label></fieldset>
+<fieldset><legend>8. Which instruction is described by 8B AD 00 10?</legend><label><input type="radio" name="q8" value="a" required>MOV BP,[DI+1000h]</label><label><input type="radio" name="q8" value="b">MOV DL,[DI+1]</label><label><input type="radio" name="q8" value="c">MOV [DI+1000h],BP</label></fieldset><button type="submit">Grade &amp; explain</button>
         <output id="quiz-output" aria-live="polite" aria-atomic="true" hidden></output>
       </form>
-      <details><summary>Answer key for self-grading or printing</summary><p>1-B: low byte at the lower address. 2-A: 1000h×10h+0020h=10020h. 3-C: BP selects SS. 4-B: signed overflow without unsigned carry. 5-B: parity checks the low byte 00h. 6-C: the memory width is explicit and [BX] is valid.</p></details>
+      <details><summary>Answer key for self-grading or printing</summary><p>1-B: low byte at the lower address. 2-A: 1000h×10h+0020h=10020h. 3-C: BP selects SS. 4-B: signed overflow without unsigned carry. 5-B: parity checks the low byte 00h. 6-C: the memory width is explicit and [BX] is valid. 7-B: disp8 F3h is −13. 8-A: 8B AD 00 10 loads BP from DS:(DI+1000h).</p></details>
     </section>
 
     <section id="revision">
       <h2>14. Revision table and references</h2>
-      <div class="table-wrap"><table><thead><tr><th>Topic</th><th>Rule to apply</th></tr></thead><tbody><tr><td>Little-endian</td><td>The low byte occupies the lower address</td></tr><tr><td>Byte-addressable capacity</td><td>n address bits → 2ⁿ bytes</td></tr><tr><td>Real-mode physical address</td><td>segment×10h+offset; original 8086 bus retains 20 bits</td></tr><tr><td>Segment span</td><td>16-bit offsets cover up to 64 KiB; segment bases advance in 16-byte steps</td></tr><tr><td>Default memory segment</td><td>BP-based operand → SS; other ordinary forms here → DS</td></tr><tr><td>MOV width</td><td>AL/AH etc. → byte; AX/BX etc. → word; specify PTR when needed</td></tr><tr><td>ADD flags</td><td>CF: unsigned overflow; OF: signed overflow; PF: parity of the low byte</td></tr><tr><td>MOV behavior</td><td>Copies source into destination; leaves status flags unchanged</td></tr><tr><td>Prefetch queue</td><td>8088: 4 bytes; 8086: 6 bytes</td></tr></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Topic</th><th>Rule to apply</th></tr></thead><tbody><tr><td>Little-endian</td><td>The low byte occupies the lower address</td></tr><tr><td>Byte-addressable capacity</td><td>n address bits → 2ⁿ bytes</td></tr><tr><td>Real-mode physical address</td><td>segment×10h+offset; original 8086 bus retains 20 bits</td></tr><tr><td>Segment span</td><td>16-bit offsets cover up to 64 KiB; segment bases advance in 16-byte steps</td></tr><tr><td>Default memory segment</td><td>BP-based operand → SS; other ordinary forms here → DS</td></tr><tr><td>MOV width</td><td>AL/AH etc. → byte; AX/BX etc. → word; specify PTR when needed</td></tr><tr><td>ADD flags</td><td>CF: unsigned overflow; OF: signed overflow; PF: parity of the low byte</td></tr><tr><td>MOV behavior</td><td>Copies source into destination; leaves status flags unchanged</td></tr><tr><td>Signed displacement</td><td>MOD=01 uses −128..+127; +0F3h needs disp16</td></tr><tr><td>Encoding byte order</td><td>Low displacement byte precedes high byte; instruction size differs from data width</td></tr><tr><td>Prefetch queue</td><td>8088: 4 bytes; 8086: 6 bytes</td></tr></tbody></table></div>
       <h3>Terminology</h3>
       <p><strong>MSB/LSB:</strong> most/least significant bit. <strong>Nibble:</strong> four bits. <strong>Operand:</strong> an instruction's data or data-location argument. <strong>Immediate:</strong> a constant encoded in an instruction. <strong>Displacement:</strong> a constant added when forming an EA. <strong>EA:</strong> effective address, the calculated offset. <strong>Opcode:</strong> operation code. <strong>Assembler:</strong> software translating assembly source. <strong>ISR:</strong> interrupt service routine. <strong>Prefetch:</strong> fetching instruction bytes ahead of execution.</p>
       <h3 id="references">References</h3>
@@ -696,12 +733,13 @@ MOV [BX], [SI]</code></pre>
         <li id="ref-asm1"><a href="https://yassinebridi.github.io/asm-docs/asm_tutorial_01.html" target="_blank" rel="noopener noreferrer">emu8086 — Assembler tutorial, Part 1</a>, hosted in Yassine Bridi's asm-docs. Reference for the concept/example/diagram teaching format, introductory assembly terminology and register names. Its figures and prose are not reproduced in this chapter.</li>
         <li id="ref-asm2"><a href="https://yassinebridi.github.io/asm-docs/asm_tutorial_02.html" target="_blank" rel="noopener noreferrer">emu8086 — Assembler tutorial, Part 2: Memory Access</a>. Cross-check for MOV operands, widths, valid address-register combinations, default segments and BYTE/WORD PTR. A local copy accompanies the supplied emu8086 documentation.</li>
         <li id="ref-asm6"><a href="https://yassinebridi.github.io/asm-docs/asm_tutorial_06.html" target="_blank" rel="noopener noreferrer">emu8086 — Assembler tutorial, Part 6: Arithmetic and Logic Instructions</a>. Cross-check for CF/OF and parity of the low result byte. A local copy accompanies the supplied documentation.</li>
-        <li id="ref-intel"><a href="https://bitsavers.org/components/intel/8086/9800722-03_The_8086_Family_Users_Manual_Oct79.pdf" target="_blank" rel="noopener noreferrer">Intel — The 8086 Family User's Manual, October 1979</a>, archived at Bitsavers. Original reference for further study of architecture, instructions and encodings.</li>
-      </ol>
+        <li id="ref-intel"><a href="https://bitsavers.org/components/intel/8086/9800722-03_The_8086_Family_Users_Manual_Oct79.pdf" target="_blank" rel="noopener noreferrer">Intel — The 8086 Family User's Manual, October 1979</a>, archived at Bitsavers. Original reference for architecture, instructions and encodings. Chapter 4, tables 4-8–4-12, checks register codes, signed disp8 and displacement byte order. A <a href="https://www.inf.pucrs.br/~calazans/undergrad/orgcomp_EC/mat_microproc/intel-8086_family_Users_Manual.pdf">second PDF mirror</a> is available.</li>
+      <li id="ref-video-part2"><a href="https://www.youtube.com/watch?v=V-i9OKeEW3A">Nguyễn Huy Hoàng — Microprocessor Engineering, Session 1 (16/03), P2</a>, uploaded by Toan Nguyen on 4 January 2021, duration 27:00. Continuation source for the MOV encoding examples in section 10: reversing direction, displacement bytes, register mode and indexed loads. Coverage and approximate timestamps were identified from the Vietnamese automatic captions, not from inspecting every video frame.</li>
+</ol>
       <p class="source-note">Cropped figures retain the original slide labels, including Vietnamese. Each caption gives the deck and slide number. The explanations and captions remain in English.</p>
       <h3>Scope and use of sources</h3>
       <p>This chapter synthesizes the material by topic for independent study. The lecture and slides define its subject coverage; examples, revision tables, exercises and calculators explain how to apply the rules. CF versus OF, EA versus physical address and DS:DI versus ES:DI are distinguished explicitly to prevent misuse of simplified models.</p>
-      <p>The scope is the original 8086/8088 and the classic IBM PC model. Detailed pin functions, the complete instruction set, interface design and protected mode belong to later chapters. The video ends at the beginning of instruction encoding; the completed example in section 10 also uses Part2 of the slides. Rights to the original source material belong to its respective authors.</p>
+      <p>The scope is the original 8086/8088 and the classic IBM PC model. Detailed pin functions, the complete instruction set, interface design and protected mode belong to later chapters. Both parts of session 1 are included. Part 1 introduces instruction encoding and part 2 works through the byte sequences in section 10. The corrected register table and signed +0F3h displacement example follow Intel's encoding rules. Sample code bytes were checked independently; the two practice listings still need a walkthrough in the emu8086 application. Rights to the original source material belong to its respective authors.</p>
     </section>
     <footer>Microprocessor Study Guide · English edition · Content and exercises are available offline.</footer>
   </main>
@@ -767,8 +805,8 @@ MOV [BX], [SI]</code></pre>
       output.textContent = hex(a, bits / 4) + ' + ' + hex(b, bits / 4) + ' → ' + hex(flags.result, bits / 4) + ' (' + bits + ' bits)\n' + ['CF', 'OF', 'SF', 'ZF', 'AF', 'PF'].map(name => name + '=' + flags[name]).join(' · ');
     } catch (error) { output.textContent = error.message; }
   });
-  const quizAnswers = ['b', 'a', 'c', 'b', 'b', 'c'];
-  const quizReasons = ['The low byte 34h occupies the lower address 0100h. Review section 01.', '1000h × 10h + 0020h = 10020h. Review section 05.', 'A memory address using BP defaults to SS. Review section 09.', '+127 + 1 exceeds the signed range; unsigned 128 is representable. Review section 06.', 'PF checks only the low byte 00h, which contains zero set bits — an even count. Review section 06.', 'BYTE PTR specifies a byte write; [BX] is a valid address form. Review section 08.'];
+  const quizAnswers = ['b', 'a', 'c', 'b', 'b', 'c', 'b', 'a'];
+  const quizReasons = ["The low byte 34h occupies the lower address 0100h. Review section 01.", "1000h × 10h + 0020h = 10020h. Review section 05.", "A memory address using BP defaults to SS. Review section 09.", "+127 + 1 exceeds the signed range; unsigned 128 is representable. Review section 06.", "PF checks only the low byte 00h, which contains zero set bits — an even count. Review section 06.", "BYTE PTR specifies a byte write; [BX] is a valid address form. Review section 08.", "MOD=01 sign-extends its byte: F3h becomes FFF3h, or -13. Review section 10.5.", "8Bh is a word load into REG; ADh selects BP and DI+disp16. 00 10 is 1000h. Review section 10.7."];
   document.getElementById('quiz').addEventListener('submit', event => {
     event.preventDefault();
     const answers = new FormData(event.currentTarget);
@@ -780,7 +818,7 @@ MOV [BX], [SI]</code></pre>
     });
     const output = document.getElementById('quiz-output');
     output.hidden = false;
-    output.textContent = 'Score: ' + score + '/6\n\n' + lines.join('\n\n');
+    output.textContent = 'Score: ' + score + '/' + quizAnswers.length + '\n\n' + lines.join('\n\n');
   });
   const figureViewer = document.getElementById('figure-viewer');
   document.querySelectorAll('.figure-open').forEach(button => {
