@@ -2,6 +2,12 @@
 
 This folder will contain step-by-step notes and examples for basic 8086 assembly programming with emu8086.
 
+## Available Notes and Examples
+
+- [Reading a keyboard character with INT 21h](int_21h.md).
+- [Unsigned division with DIV](div.md).
+- [Reading eight digits into an array](input_8_digits.asm).
+
 Planned topics:
 
 - Declaring variables and constants.
