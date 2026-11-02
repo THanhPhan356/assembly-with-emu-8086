@@ -1,6 +1,4 @@
 ; Read eight digits and calculate statistics for groups A, B, and C.
-; shortcut: accepts digit keys only; add validation before allowing other input.
-; shortcut: an empty group keeps max=0 and min=9; define empty-group output before printing.
 
 org 100h
 jmp start
@@ -25,8 +23,12 @@ start:
     mov si, 0
 
 nhap:
-    mov ah, 01h
+    mov ah, 07h        ; Read without echo: stdout contains only the result row.
     int 21h
+    cmp al, '0'
+    jb nhap
+    cmp al, '9'
+    ja nhap
     sub al, '0'
     mov ARR[si], al
     inc si
@@ -149,4 +151,65 @@ next_C:
     cmp si, 8
     jb check_C
 
+; The problem leaves empty-group extrema unspecified; print zero for both.
+    cmp soluong, 0
+    jne empty_A_done
+    mov min, 0
+empty_A_done:
+    cmp soluong_B, 0
+    jne empty_B_done
+    mov min_B, 0
+empty_B_done:
+    cmp soluong_C, 0
+    jne empty_C_done
+    mov min_C, 0
+empty_C_done:
+
+; The twelve result bytes are contiguous, in the required output order.
+    lea si, soluong
+    mov cx, 12
+print_results:
+    mov al, [si]
+    call print_u8
+    inc si
+    dec cx
+    jz print_done
+    mov dl, ' '
+    mov ah, 02h
+    int 21h
+    jmp print_results
+
+print_done:
+    mov dl, 13
+    mov ah, 02h
+    int 21h
+    mov dl, 10
+    int 21h
+    mov ax, 4C00h
+    int 21h
+
+; AL is in 0..72. Print one or two decimal digits; preserve AX, BX, DX.
+print_u8:
+    push ax
+    push bx
+    push dx
+    mov ah, 0
+    mov bl, 10
+    div bl
+    push ax           ; Keep the units digit across DOS output.
+    cmp al, 0
+    je print_units
+    mov dl, al
+    add dl, '0'
+    mov ah, 02h
+    int 21h
+print_units:
+    pop ax
+    mov dl, ah
+    add dl, '0'
+    mov ah, 02h
+    int 21h
+    pop dx
+    pop bx
+    pop ax
     ret

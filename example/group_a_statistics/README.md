@@ -1,5 +1,7 @@
 # Classifying Eight Digits: Groups A, B, and C Statistics
 
+[Bài làm đầy đủ câu a–d bằng tiếng Việt](BAI_LAM.md), gồm lưu đồ, mô tả biến, Assembly, C và kết quả kiểm thử.
+
 ## Original Problem Statement
 
 Read eight integers from the keyboard, each between 0 and 9, and store them in `ARR[0..7]`. Classify each value into exactly one group:
@@ -27,7 +29,9 @@ The assignment also asks for a flowchart, detailed variable descriptions, and co
 
 ## Current Checkpoint
 
-[group_a_statistics.asm](group_a_statistics.asm) implements keyboard input and the four statistics for **groups A, B, and C**. It preserves the variable names and control flow used during the lesson. Result printing, the flowchart, and the C version are not implemented in this checkpoint.
+[group_a_statistics.asm](group_a_statistics.asm) and [group_a_statistics.c](group_a_statistics.c) implement keyboard input, all four statistics for **groups A, B, and C**, and the required single output row. Both preserve the variable names and three separate passes used during the lesson. The [report](BAI_LAM.md) contains the flowchart, detailed variable descriptions, and test results for parts a–d.
+
+For an empty group, print `0 0 0 0`. The assignment leaves empty-group extrema unspecified; the last two zeros are an explicit convention, not mathematical extrema. Non-digit input is ignored; only the first eight digits are processed. The Assembly input does not echo typed keys.
 
 | Variable | Meaning |
 |---|---|
@@ -83,46 +87,50 @@ The original operand order is also valid with the matching jump: `cmp max_B, al`
 
 No second keyboard-input loop is needed: group A reads `ARR` without modifying it. Reset `SI = 0` and scan the same array for group B. Use the four separate `_B` variables so that updating B does not overwrite A's results.
 
-Initialize the running minimum to 9 before the scan. The pasted declaration `min_B db 0` is safe here only because `mov min_B, 9` executes before processing B. Empty groups still need an output convention before result printing is implemented.
+Initialize the running minimum to 9 before the scan. The pasted declaration `min_B db 0` is safe here only because `mov min_B, 9` executes before processing B. Before printing, the completed version sets an empty group's minimum to zero, leaving its count, sum, and maximum at zero.
 
 ## Validation
 
-217 source-instruction logic checks passed for all three groups, including repeated digits and empty groups. This check interprets the instructions used by this source; it does not replace assembling and running the program in emu8086.
+[test_statistics.py](test_statistics.py) passed **120 cases in both compiled C and assembled 16-bit x86**, including 100 deterministic random arrays, repeated digits, empty groups, ignored non-digit input, and two-digit sums. It checks all result bytes, exact output, memory write bounds, and stack balance, plus three C EOF cases.
+
+The test compiles C with GCC using `-std=c11 -Wall -Wextra -Werror -pedantic`. For Assembly, it adapts only memory-operand syntax to FASM, assembles the resulting source, and executes the binary with Unicorn and hooks for DOS input/output/exit. **It has not been compiled or run in the emu8086 application.**
+
+With GCC, FASM, and Python `unicorn` available:
+
+```sh
+python test_statistics.py
+```
+
+Set `FASM` or `CC` to the appropriate compiler executable if needed.
 
 ## Running in emu8086
 
-1. Open the Assembly file and select **Emulate**.
-2. Set a breakpoint on the final `RET`, then run.
-3. Type eight digits consecutively in the emulator screen. Do not type spaces or press Enter.
-4. Inspect the variables before executing `RET`. Results are stored in memory, not printed.
+1. Open the Assembly file and select **Compile and Emulate**.
+2. Select **Run** and type eight digits in the emulator screen.
+3. Typed keys do not appear because input uses DOS `AH=07h`. No Enter is needed; non-digit keys are ignored.
+4. The program prints all twelve values on one line, separated by one space, then exits.
 
-| Input | `soluong` | `tong` | `max` | `min` |
-|---|---:|---:|---:|---:|
-| `12345678` | 2 | 9 | 6 | 3 |
-| `03699912` | 6 | 36 | 9 | 0 |
-| `99999999` | 8 | 72 | 9 | 9 |
-| `00000000` | 8 | 0 | 0 | 0 |
+For `12345678`, the output is:
 
-Expected group B results:
+```text
+2 9 6 3 3 13 7 1 3 14 8 2
+```
 
-| Input | `soluong_B` | `tong_B` | `max_B` | `min_B` |
-|---|---:|---:|---:|---:|
-| `12345678` | 3 | 13 | 7 | 1 |
-| `03699912` | 1 | 1 | 1 | 1 |
-| `77777777` | 8 | 56 | 7 | 7 |
-| `99999999` | 0 | 0 | 0* | 9* |
-| `00000000` | 0 | 0 | 0* | 9* |
+## Running the C version
 
-Expected group C results:
+```sh
+gcc -std=c11 -Wall -Wextra -Werror -pedantic group_a_statistics.c -o statistics
+./statistics
+```
 
-| Input | `soluong_C` | `tong_C` | `max_C` | `min_C` |
-|---|---:|---:|---:|---:|
-| `12345678` | 3 | 14 | 8 | 2 |
-| `03699912` | 1 | 2 | 2 | 2 |
-| `24824824` | 8 | 32 | 8 | 2 |
-| `88888888` | 8 | 64 | 8 | 8 |
-| `00000000` | 0 | 0 | 0* | 9* |
+On Windows, run `statistics.exe`. A line-buffered terminal may require Enter after the input. EOF before eight digits produces an error on stderr and exit code 1.
 
-`*` Initialization values for an empty group, not valid extrema.
-
-Input validation is not implemented: only digit keys `0` through `9` are supported. The original problem does not specify what to print for an empty group's minimum and maximum. If a group's count is zero, this checkpoint retains that group's initialization values (maximum 0 and minimum 9); these are not valid extrema for an empty group.
+| Input | A: count, sum, max, min | B: count, sum, max, min | C: count, sum, max, min |
+|---|---|---|---|
+| `12345678` | `2 9 6 3` | `3 13 7 1` | `3 14 8 2` |
+| `03699912` | `6 36 9 0` | `1 1 1 1` | `1 2 2 2` |
+| `99999999` | `8 72 9 9` | `0 0 0 0` | `0 0 0 0` |
+| `77777777` | `0 0 0 0` | `8 56 7 7` | `0 0 0 0` |
+| `88888888` | `0 0 0 0` | `0 0 0 0` | `8 64 8 8` |
+| `00000000` | `8 0 0 0` | `0 0 0 0` | `0 0 0 0` |
+| `24824824` | `0 0 0 0` | `0 0 0 0` | `8 34 8 2` |

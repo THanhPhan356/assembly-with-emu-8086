@@ -1,0 +1,85 @@
+flowchart TB
+accTitle: Lưu đồ phân loại tám chữ số
+accDescr: Nhập tám chữ số, duyệt lần lượt nhóm A rồi B rồi C. Mỗi vòng duyệt tính số lượng, tổng, lớn nhất, nhỏ nhất. Nhóm rỗng đặt min bằng không, sau đó in đúng mười hai kết quả.
+start(["Bắt đầu"]) --> input_digits[/"Nhập 8 chữ số vào ARR[0..7]"/]
+input_digits --> init_A
+subgraph group_A["Nhóm A"]
+    init_A["si = 0; soluong = 0; tong = 0<br/>max = 0; min = 9"]
+    check_A{"si &lt; 8?"}
+    test_A{"ARR[si] % 3 = 0?"}
+    add_A["soluong += 1<br/>tong += ARR[si]"]
+    max_test_A{"ARR[si] &gt; max?"}
+    max_set_A["max = ARR[si]"]
+    min_test_A{"ARR[si] &lt; min?"}
+    min_set_A["min = ARR[si]"]
+    next_A["si += 1"]
+    init_A --> check_A
+    check_A -->|Có| test_A
+    test_A -->|Không| next_A
+    test_A -->|Có| add_A
+    add_A --> max_test_A
+    max_test_A -->|Có| max_set_A
+    max_test_A -->|Không| min_test_A
+    max_set_A --> min_test_A
+    min_test_A -->|Có| min_set_A
+    min_test_A -->|Không| next_A
+    min_set_A --> next_A
+    next_A --> check_A
+end
+subgraph group_B["Nhóm B"]
+    init_B["si = 0; soluong_B = 0; tong_B = 0<br/>max_B = 0; min_B = 9"]
+    check_B{"si &lt; 8?"}
+    test_B{"ARR[si] % 2 != 0?"}
+    div3_B{"ARR[si] % 3 != 0?"}
+    add_B["soluong_B += 1<br/>tong_B += ARR[si]"]
+    max_test_B{"ARR[si] &gt; max_B?"}
+    max_set_B["max_B = ARR[si]"]
+    min_test_B{"ARR[si] &lt; min_B?"}
+    min_set_B["min_B = ARR[si]"]
+    next_B["si += 1"]
+    init_B --> check_B
+    check_B -->|Có| test_B
+    test_B -->|Không| next_B
+    test_B -->|Có| div3_B
+    div3_B -->|Không| next_B
+    div3_B -->|Có| add_B
+    add_B --> max_test_B
+    max_test_B -->|Có| max_set_B
+    max_test_B -->|Không| min_test_B
+    max_set_B --> min_test_B
+    min_test_B -->|Có| min_set_B
+    min_test_B -->|Không| next_B
+    min_set_B --> next_B
+    next_B --> check_B
+end
+subgraph group_C["Nhóm C"]
+    init_C["si = 0; soluong_C = 0; tong_C = 0<br/>max_C = 0; min_C = 9"]
+    check_C{"si &lt; 8?"}
+    test_C{"ARR[si] % 2 = 0?"}
+    div3_C{"ARR[si] % 3 != 0?"}
+    add_C["soluong_C += 1<br/>tong_C += ARR[si]"]
+    max_test_C{"ARR[si] &gt; max_C?"}
+    max_set_C["max_C = ARR[si]"]
+    min_test_C{"ARR[si] &lt; min_C?"}
+    min_set_C["min_C = ARR[si]"]
+    next_C["si += 1"]
+    init_C --> check_C
+    check_C -->|Có| test_C
+    test_C -->|Không| next_C
+    test_C -->|Có| div3_C
+    div3_C -->|Không| next_C
+    div3_C -->|Có| add_C
+    add_C --> max_test_C
+    max_test_C -->|Có| max_set_C
+    max_test_C -->|Không| min_test_C
+    max_set_C --> min_test_C
+    min_test_C -->|Có| min_set_C
+    min_test_C -->|Không| next_C
+    min_set_C --> next_C
+    next_C --> check_C
+end
+check_A -->|Không| init_B
+check_B -->|Không| init_C
+check_C -->|Không| empty_groups["Nhóm nào có số lượng = 0: đặt min của nhóm đó = 0"]
+empty_groups --> output_results[/"In số lượng, tổng, max, min của A, B, C<br/>12 số trên một dòng, cách nhau 1 dấu cách"/]
+output_results --> finish(["Kết thúc"])
