@@ -1,4 +1,4 @@
-; Read eight digits and calculate statistics for values divisible by 3.
+; Read eight digits and calculate statistics for groups A and B.
 ; shortcut: accepts digit keys only; add validation before allowing other input.
 ; shortcut: an empty group keeps max=0 and min=9; define empty-group output before printing.
 
@@ -10,6 +10,11 @@ soluong db 0
 tong db 0
 max db 0
 min db 9
+
+soluong_B db 0
+tong_B db 0
+max_B db 0
+min_B db 0
 
 start:
     mov si, 0
@@ -56,5 +61,46 @@ ko_chia_het:
     inc si
     cmp si, 8
     jb check_A
+
+; Group B: odd values that are not divisible by 3.
+    mov si, 0
+    mov soluong_B, 0
+    mov max_B, 0
+    mov min_B, 9
+    mov tong_B, 0
+
+check_B:
+    mov al, ARR[si]
+    mov ah, 0
+    mov bl, 2
+    div bl
+    cmp ah, 0
+    je next_B
+
+    mov al, ARR[si]     ; Reload the original value before testing divisibility by 3.
+    mov ah, 0
+    mov bl, 3
+    div bl
+    cmp ah, 0
+    je next_B
+
+    inc soluong_B
+    mov al, ARR[si]
+    add tong_B, al
+
+    cmp al, max_B
+    jbe max_done_B
+    mov max_B, al
+
+max_done_B:
+    cmp al, min_B
+    jge min_done_B
+    mov min_B, al
+
+min_done_B:
+next_B:
+    inc si
+    cmp si, 8
+    jb check_B
 
     ret

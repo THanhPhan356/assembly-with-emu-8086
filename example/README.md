@@ -10,4 +10,4 @@ Each example has its own folder, with a README containing the problem statement 
 | [Converting a While Loop to Assembly](while_abs_array/README.md) | Compute absolute values of byte elements with an explicit while loop | Assembly |
 | [Addition, Subtraction, and Binary Output](add_subtract/README.md) | Trace registers and flags, explain instruction timings, and print 14 in binary | Assembly, C snippets, and report |
 | [20-digit Integer Addition](add_20digit/README.md) | Add two decimal integers of up to 20 digits using five 16-bit words and carry | C and Assembly |
-| [Group A Statistics](group_a_statistics/README.md) | Read eight digits and compute count, sum, maximum, and minimum for values divisible by 3 | Assembly |
+| [Groups A and B Statistics](group_a_statistics/README.md) | Read eight digits and compute count, sum, maximum, and minimum for values divisible by 3 and odd values not divisible by 3 | Assembly |

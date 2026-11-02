@@ -1,4 +1,4 @@
-# Classifying Eight Digits: Group A Statistics
+# Classifying Eight Digits: Groups A and B Statistics
 
 ## Original Problem Statement
 
@@ -27,7 +27,7 @@ The assignment also asks for a flowchart, detailed variable descriptions, and co
 
 ## Current Checkpoint
 
-[group_a_statistics.asm](group_a_statistics.asm) implements keyboard input and the four statistics for **group A only**. It preserves the variable names and control flow used during the lesson. Groups B and C, result printing, the flowchart, and the C version are not implemented in this checkpoint.
+[group_a_statistics.asm](group_a_statistics.asm) implements keyboard input and the four statistics for **groups A and B**. It preserves the variable names and control flow used during the lesson. Group C, result printing, the flowchart, and the C version are not implemented in this checkpoint.
 
 | Variable | Meaning |
 |---|---|
@@ -36,8 +36,12 @@ The assignment also asks for a flowchart, detailed variable descriptions, and co
 | `tong` | Sum of values in group A |
 | `max` | Maximum value in group A |
 | `min` | Minimum value in group A |
+| `soluong_B` | Number of values in group B |
+| `tong_B` | Sum of values in group B |
+| `max_B` | Maximum value in group B |
+| `min_B` | Minimum value in group B |
 
-The program divides each value by 3 and checks the remainder in `AH`. It reloads the original value before adding to `tong`, because `DIV BL` overwrites `AL` with the quotient. Only values in group A update the statistics. A byte is sufficient for each result: the count is at most 8 and the sum is at most 72.
+The program divides each value by 3 and checks the remainder in `AH`. It reloads the original value before adding to `tong`, because `DIV BL` overwrites `AL` with the quotient. Group A updates only its own statistics. A second pass resets `SI` to zero and selects group B by checking for an odd remainder after division by 2, then a nonzero remainder after division by 3. Reloading `ARR[si]` before each division is necessary because `DIV BL` overwrites `AL`. Group B uses separate statistics and leaves the array and group A results unchanged. A byte is sufficient for each result: the count is at most 8 and the sum is at most 72.
 
 ## Running in emu8086
 
@@ -53,4 +57,16 @@ The program divides each value by 3 and checks the remainder in `AH`. It reloads
 | `99999999` | 8 | 72 | 9 | 9 |
 | `00000000` | 8 | 0 | 0 | 0 |
 
-Input validation is not implemented: only digit keys `0` through `9` are supported. The original problem does not specify what to print for an empty group's minimum and maximum. If `soluong = 0`, this checkpoint retains the initialization values `max = 0` and `min = 9`; these are not valid extrema for an empty group.
+Expected group B results:
+
+| Input | `soluong_B` | `tong_B` | `max_B` | `min_B` |
+|---|---:|---:|---:|---:|
+| `12345678` | 3 | 13 | 7 | 1 |
+| `03699912` | 1 | 1 | 1 | 1 |
+| `77777777` | 8 | 56 | 7 | 7 |
+| `99999999` | 0 | 0 | 0* | 9* |
+| `00000000` | 0 | 0 | 0* | 9* |
+
+`*` Initialization values for an empty group, not valid extrema.
+
+Input validation is not implemented: only digit keys `0` through `9` are supported. The original problem does not specify what to print for an empty group's minimum and maximum. If a group's count is zero, this checkpoint retains that group's initialization values (maximum 0 and minimum 9); these are not valid extrema for an empty group.
