@@ -43,6 +43,44 @@ The assignment also asks for a flowchart, detailed variable descriptions, and co
 
 The program divides each value by 3 and checks the remainder in `AH`. It reloads the original value before adding to `tong`, because `DIV BL` overwrites `AL` with the quotient. Group A updates only its own statistics. A second pass resets `SI` to zero and selects group B by checking for an odd remainder after division by 2, then a nonzero remainder after division by 3. Reloading `ARR[si]` before each division is necessary because `DIV BL` overwrites `AL`. Group B uses separate statistics and leaves the array and group A results unchanged. A byte is sufficient for each result: the count is at most 8 and the sum is at most 72.
 
+## Group B: Mistakes and Explanations from the Lesson
+
+### Reload the original value after DIV
+
+The first attempt divided by 2 and then divided by 3 without reloading `AL`. After `DIV BL`, `AL` holds the quotient and `AH` holds the remainder; neither preserves the original number. For example, dividing 7 by 2 leaves `AL = 3`, so another division would test 3 instead of 7.
+
+Reload `AL` from `ARR[si]` and clear `AH` before testing division by 3. Reload `AL` again before adding to the sum or comparing extrema. `DIV` changes registers, not the array.
+
+### Skip numbers divisible by 3
+
+The first attempt used `JNE next_B` after testing the remainder from division by 3. That skipped the values group B should keep.
+
+Group B requires **both** an odd value **and** a value not divisible by 3. Thus 3 and 9 belong only to group A, while group B contains 1, 5, and 7. Use:
+
+```asm
+cmp ah, 0
+je next_B              ; Remainder zero: divisible by 3, so skip it.
+```
+
+### Match CMP operand order to the conditional jump
+
+`CMP left, right` sets flags as if subtracting `right` from `left`, without changing either operand. The following jump interprets those flags, so swapping operands requires changing the jump too.
+
+| First attempt | Problem | Correct pair |
+|---|---|---|
+| `cmp max_B, al` then `jbe max_done_B` | Skips when the old maximum is less than or equal to the new value, which is when an update may be needed | `cmp al, max_B` then `jbe max_done_B` |
+| `cmp min_B, al` then `jge min_done_B` | Skips when the old minimum is greater than or equal to the new value, which is when an update may be needed | `cmp al, min_B` then `jge min_done_B` |
+
+Example: with `max_B = 0` and `AL = 5`, `cmp max_B, al` followed by `JBE` skips the update because 0 <= 5. With the corrected order, 5 <= 0 is false, so the maximum becomes 5.
+
+The original operand order is also valid with the matching jump: `cmp max_B, al` followed by `JAE`, or `cmp min_B, al` followed by `JLE`. `JBE/JAE` are unsigned comparisons; `JGE/JLE` are signed comparisons. Both work for the 0-9 values in this exercise.
+
+### Reuse input, keep separate results
+
+No second keyboard-input loop is needed: group A reads `ARR` without modifying it. Reset `SI = 0` and scan the same array for group B. Use the four separate `_B` variables so that updating B does not overwrite A's results.
+
+Initialize the running minimum to 9 before the scan. The pasted declaration `min_B db 0` is safe here only because `mov min_B, 9` executes before processing B. Empty groups still need an output convention before result printing is implemented.
+
 ## Running in emu8086
 
 1. Open the Assembly file and select **Emulate**.
