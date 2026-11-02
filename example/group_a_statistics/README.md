@@ -1,6 +1,6 @@
 # Classifying Eight Digits: Groups A, B, and C Statistics
 
-[Bài làm đầy đủ câu a–d bằng tiếng Việt](BAI_LAM.md), gồm lưu đồ, mô tả biến, Assembly, C và kết quả kiểm thử.
+[Complete solution for parts a–d](BAI_LAM.md), including the flowchart, variable descriptions, Assembly and C implementations, and test results.
 
 ## Original Problem Statement
 

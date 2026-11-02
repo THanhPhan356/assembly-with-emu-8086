@@ -1,35 +1,35 @@
-# Bài 1: Phân loại và thống kê tám chữ số
+# Exercise 1: Classifying and Summarizing Eight Digits
 
-Nhập tám số nguyên từ 0 đến 9 vào `ARR[0..7]`. Giữ đúng tên biến và cấu trúc ba vòng duyệt riêng của bài làm ban đầu.
+Read eight integers from 0 to 9 into `ARR[0..7]`. Preserve the original variable names and the three separate array scans.
 
-| Nhóm | Điều kiện | Giá trị có thể nhận |
+| Group | Condition | Possible values |
 |---|---|---|
-| A | Chia hết cho 3 | 0, 3, 6, 9 |
-| B | Lẻ và không chia hết cho 3 | 1, 5, 7 |
-| C | Chẵn và không chia hết cho 3 | 2, 4, 8 |
+| A | Divisible by 3 | 0, 3, 6, 9 |
+| B | Odd and not divisible by 3 | 1, 5, 7 |
+| C | Even and not divisible by 3 | 2, 4, 8 |
 
-Mỗi nhóm in lần lượt **số lượng, tổng, lớn nhất, nhỏ nhất**. Các phần tử trùng nhau vẫn được đếm và cộng riêng; số 0 thuộc nhóm A.
+For each group, print **count, sum, maximum, minimum**, in that order. Repeated values are counted and added separately; zero belongs to group A.
 
-**Quy ước bổ sung:** đề không quy định trường hợp nhóm rỗng. Bài làm chọn in `0 0 0 0` cho nhóm đó; hai số cuối là quy ước, không phải cực trị toán học của tập rỗng.
+**Additional convention:** the assignment does not specify how to represent empty groups. This solution prints `0 0 0 0` for an empty group. The last two zeros are a convention, not mathematical extrema of an empty set.
 
-## a. Lưu đồ thuật toán
+## a. Algorithm Flowchart
 
-![Lưu đồ ba vòng duyệt A, B, C và phần in kết quả](flowchart.svg)
+![Flowchart of the three scans for groups A, B, and C, followed by result output](flowchart.svg)
 
-[Nguồn lưu đồ Mermaid có thể chỉnh sửa](flowchart.mmd).
+[Editable Mermaid source](flowchart.mmd).
 
-Nhập đủ tám chữ số, duyệt nhóm A, đặt lại `si = 0` rồi duyệt B, tiếp tục đặt lại `si = 0` rồi duyệt C. Mỗi lần gặp phần tử phù hợp: tăng số lượng, cộng tổng, so sánh để cập nhật max và min. Sau ba vòng, đặt min của nhóm rỗng bằng 0 và in kết quả.
+After reading eight digits, scan group A, reset `si = 0`, scan group B, reset `si = 0` again, and scan group C. For each matching element, increment the count, add to the sum, and compare the value with the current maximum and minimum. After all three scans, set the minimum of each empty group to zero and print the results.
 
 <details>
-<summary>Xem trực tiếp lưu đồ Mermaid</summary>
+<summary>View the Mermaid flowchart</summary>
 
 ```mermaid
 flowchart TB
-accTitle: Lưu đồ phân loại tám chữ số
-accDescr: Nhập tám chữ số, duyệt lần lượt nhóm A rồi B rồi C. Mỗi vòng duyệt tính số lượng, tổng, lớn nhất, nhỏ nhất. Nhóm rỗng đặt min bằng không, sau đó in đúng mười hai kết quả.
-start(["Bắt đầu"]) --> input_digits[/"Nhập 8 chữ số vào ARR[0..7]"/]
+accTitle: Eight-digit classification flowchart
+accDescr: Read eight digits, then scan groups A, B, and C in order. Each scan computes count, sum, maximum, and minimum. Set an empty group's minimum to zero, then print all twelve results.
+start(["Start"]) --> input_digits[/"Read 8 digits into ARR[0..7]"/]
 input_digits --> init_A
-subgraph group_A["Nhóm A"]
+subgraph group_A["Group A"]
     init_A["si = 0; soluong = 0; tong = 0<br/>max = 0; min = 9"]
     check_A{"si &lt; 8?"}
     test_A{"ARR[si] % 3 = 0?"}
@@ -40,19 +40,19 @@ subgraph group_A["Nhóm A"]
     min_set_A["min = ARR[si]"]
     next_A["si += 1"]
     init_A --> check_A
-    check_A -->|Có| test_A
-    test_A -->|Không| next_A
-    test_A -->|Có| add_A
+    check_A -->|Yes| test_A
+    test_A -->|No| next_A
+    test_A -->|Yes| add_A
     add_A --> max_test_A
-    max_test_A -->|Có| max_set_A
-    max_test_A -->|Không| min_test_A
+    max_test_A -->|Yes| max_set_A
+    max_test_A -->|No| min_test_A
     max_set_A --> min_test_A
-    min_test_A -->|Có| min_set_A
-    min_test_A -->|Không| next_A
+    min_test_A -->|Yes| min_set_A
+    min_test_A -->|No| next_A
     min_set_A --> next_A
     next_A --> check_A
 end
-subgraph group_B["Nhóm B"]
+subgraph group_B["Group B"]
     init_B["si = 0; soluong_B = 0; tong_B = 0<br/>max_B = 0; min_B = 9"]
     check_B{"si &lt; 8?"}
     test_B{"ARR[si] % 2 != 0?"}
@@ -64,21 +64,21 @@ subgraph group_B["Nhóm B"]
     min_set_B["min_B = ARR[si]"]
     next_B["si += 1"]
     init_B --> check_B
-    check_B -->|Có| test_B
-    test_B -->|Không| next_B
-    test_B -->|Có| div3_B
-    div3_B -->|Không| next_B
-    div3_B -->|Có| add_B
+    check_B -->|Yes| test_B
+    test_B -->|No| next_B
+    test_B -->|Yes| div3_B
+    div3_B -->|No| next_B
+    div3_B -->|Yes| add_B
     add_B --> max_test_B
-    max_test_B -->|Có| max_set_B
-    max_test_B -->|Không| min_test_B
+    max_test_B -->|Yes| max_set_B
+    max_test_B -->|No| min_test_B
     max_set_B --> min_test_B
-    min_test_B -->|Có| min_set_B
-    min_test_B -->|Không| next_B
+    min_test_B -->|Yes| min_set_B
+    min_test_B -->|No| next_B
     min_set_B --> next_B
     next_B --> check_B
 end
-subgraph group_C["Nhóm C"]
+subgraph group_C["Group C"]
     init_C["si = 0; soluong_C = 0; tong_C = 0<br/>max_C = 0; min_C = 9"]
     check_C{"si &lt; 8?"}
     test_C{"ARR[si] % 2 = 0?"}
@@ -90,118 +90,118 @@ subgraph group_C["Nhóm C"]
     min_set_C["min_C = ARR[si]"]
     next_C["si += 1"]
     init_C --> check_C
-    check_C -->|Có| test_C
-    test_C -->|Không| next_C
-    test_C -->|Có| div3_C
-    div3_C -->|Không| next_C
-    div3_C -->|Có| add_C
+    check_C -->|Yes| test_C
+    test_C -->|No| next_C
+    test_C -->|Yes| div3_C
+    div3_C -->|No| next_C
+    div3_C -->|Yes| add_C
     add_C --> max_test_C
-    max_test_C -->|Có| max_set_C
-    max_test_C -->|Không| min_test_C
+    max_test_C -->|Yes| max_set_C
+    max_test_C -->|No| min_test_C
     max_set_C --> min_test_C
-    min_test_C -->|Có| min_set_C
-    min_test_C -->|Không| next_C
+    min_test_C -->|Yes| min_set_C
+    min_test_C -->|No| next_C
     min_set_C --> next_C
     next_C --> check_C
 end
-check_A -->|Không| init_B
-check_B -->|Không| init_C
-check_C -->|Không| empty_groups["Nhóm nào có số lượng = 0: đặt min của nhóm đó = 0"]
-empty_groups --> output_results[/"In số lượng, tổng, max, min của A, B, C<br/>12 số trên một dòng, cách nhau 1 dấu cách"/]
-output_results --> finish(["Kết thúc"])
+check_A -->|No| init_B
+check_B -->|No| init_C
+check_C -->|No| empty_groups["For each group with count = 0: set its minimum to 0"]
+empty_groups --> output_results[/"Print count, sum, max, min for A, B, C<br/>12 numbers on one line, separated by one space"/]
+output_results --> finish(["End"])
 ```
 
 </details>
 
-## b. Mô tả chi tiết các biến
+## b. Detailed Variable Descriptions
 
-| Tên | Assembly | C | Khởi tạo trước khi xử lý | Ý nghĩa / phạm vi |
+| Name | Assembly | C | Initialization before processing | Meaning / range |
 |---|---|---|---|---|
-| `ARR` | `DB 8 DUP(?)` | `unsigned char ARR[8]` | Nhập từ bàn phím | 8 phần tử, mỗi phần tử 0–9 |
-| `soluong` | `DB` | `unsigned char` | 0 | Số phần tử nhóm A, 0–8 |
-| `tong` | `DB` | `unsigned char` | 0 | Tổng nhóm A, 0–72 |
-| `max` | `DB` | `unsigned char` | 0 | Giá trị lớn nhất nhóm A |
-| `min` | `DB` | `unsigned char` | 9 | Giá trị nhỏ nhất nhóm A |
-| `soluong_B` | `DB` | `unsigned char` | 0 | Số phần tử nhóm B, 0–8 |
-| `tong_B` | `DB` | `unsigned char` | 0 | Tổng nhóm B, 0–56 |
-| `max_B` | `DB` | `unsigned char` | 0 | Giá trị lớn nhất nhóm B |
-| `min_B` | `DB` | `unsigned char` | 9 | Giá trị nhỏ nhất nhóm B |
-| `soluong_C` | `DB` | `unsigned char` | 0 | Số phần tử nhóm C, 0–8 |
-| `tong_C` | `DB` | `unsigned char` | 0 | Tổng nhóm C, 0–64 |
-| `max_C` | `DB` | `unsigned char` | 0 | Giá trị lớn nhất nhóm C |
-| `min_C` | `DB` | `unsigned char` | 9 | Giá trị nhỏ nhất nhóm C |
-| `si` / `SI` | Thanh ghi 16 bit | `int` | 0 ở đầu mỗi vòng | Chỉ số mảng; chỉ truy cập ARR khi 0–7; bằng 8 khi kết thúc vòng |
-| `ch` | `AL` khi nhập | `int` | Mỗi lần đọc một ký tự | Mã ký tự; C dùng `int` để phân biệt `EOF` |
+| `ARR` | `DB 8 DUP(?)` | `unsigned char ARR[8]` | Keyboard input | Eight elements, each from 0 to 9 |
+| `soluong` | `DB` | `unsigned char` | 0 | Group A count, 0–8 |
+| `tong` | `DB` | `unsigned char` | 0 | Group A sum, 0–72 |
+| `max` | `DB` | `unsigned char` | 0 | Group A maximum |
+| `min` | `DB` | `unsigned char` | 9 | Group A minimum |
+| `soluong_B` | `DB` | `unsigned char` | 0 | Group B count, 0–8 |
+| `tong_B` | `DB` | `unsigned char` | 0 | Group B sum, 0–56 |
+| `max_B` | `DB` | `unsigned char` | 0 | Group B maximum |
+| `min_B` | `DB` | `unsigned char` | 9 | Group B minimum |
+| `soluong_C` | `DB` | `unsigned char` | 0 | Group C count, 0–8 |
+| `tong_C` | `DB` | `unsigned char` | 0 | Group C sum, 0–64 |
+| `max_C` | `DB` | `unsigned char` | 0 | Group C maximum |
+| `min_C` | `DB` | `unsigned char` | 9 | Group C minimum |
+| `si` / `SI` | 16-bit register | `int` | 0 at the start of each scan | Array index; accesses ARR only at indices 0–7; equals 8 when a scan finishes |
+| `ch` | `AL` during input | `int` | One character per read | Character code; C uses `int` to distinguish `EOF` |
 
-Các biến thống kê chỉ cần một byte vì tổng lớn nhất là `8 × 9 = 72 < 256`. Cực tiểu khởi tạo bằng 9 vì dữ liệu không vượt quá 9; cực đại khởi tạo bằng 0 vì dữ liệu không âm. Nếu một nhóm rỗng, chương trình đổi min từ 9 thành 0 trước khi in; số lượng, tổng và max đã bằng 0.
+Each statistic fits in one byte because the largest possible sum is `8 × 9 = 72 < 256`. Initialize each minimum to 9 because no input exceeds 9, and each maximum to 0 because inputs are nonnegative. For an empty group, change its minimum from 9 to 0 before printing; its count, sum, and maximum are already zero.
 
-Các thanh ghi phụ của bản Assembly:
+Additional registers used by the Assembly implementation:
 
-| Thanh ghi | Vai trò |
+| Register | Purpose |
 |---|---|
-| `AL` | Phần tử đang xét; sau `DIV BL` chứa thương |
-| `AH` | Đặt bằng 0 trước phép chia byte; sau phép chia chứa số dư; cũng dùng chọn dịch vụ DOS |
-| `BL` | Số chia 2, 3; khi in thập phân là 10 |
-| `SI` | Sau thống kê, chuyển thành con trỏ duyệt 12 byte kết quả liền nhau |
-| `CX` | Đếm 12 giá trị cần in |
-| `DL` | Mã ASCII của ký tự cần in |
-| `SP` | Quản lý ngăn xếp cho `CALL/RET`, `PUSH/POP` |
+| `AL` | Current element; holds the quotient after `DIV BL` |
+| `AH` | Cleared before byte division; holds the remainder afterward; also selects the DOS service |
+| `BL` | Divisor 2 or 3 during classification, or 10 during decimal output |
+| `SI` | After classification, points to the twelve contiguous result bytes |
+| `CX` | Counts the twelve values to print |
+| `DL` | ASCII code of the character to print |
+| `SP` | Manages the stack for `CALL/RET` and `PUSH/POP` |
 
-`print_u8` nhận giá trị ở `AL`, in số thập phân 0–72 và bảo toàn `AX, BX, DX`; không thay đổi `SI, CX`. Mười hai biến thống kê được khai báo liền nhau đúng thứ tự cần in, nên vòng in duyệt từ địa chỉ `soluong`; nếu đổi thứ tự khai báo thì phải sửa phần in.
+`print_u8` receives a value in `AL`, prints its decimal representation in the range 0–72, and preserves `AX, BX, DX`. It does not modify `SI, CX`. The twelve statistic variables are declared consecutively in the required output order, so the printing loop starts at `soluong`. If their declaration order changes, the printing loop must be updated.
 
-## c. Chương trình Assembly và kiểm tra
+## c. Assembly Program and Verification
 
-[Code hoàn chỉnh cho EMU8086](group_a_statistics.asm).
+[Complete source for EMU8086](group_a_statistics.asm).
 
-Ba vòng `check_A`, `check_B`, `check_C` giữ nguyên cách làm của bạn. Những phần bổ sung:
+The three scans, `check_A`, `check_B`, and `check_C`, retain the original approach. The completed version adds:
 
-- Kiểm tra ký tự nhập thuộc `'0'..'9'`; bỏ qua ký tự khác, chỉ lưu tám chữ số đầu tiên.
-- Dùng `INT 21h, AH=07h` để nhập không hiện ký tự, tránh trộn dữ liệu nhập vào dòng kết quả.
-- Thống nhất kết quả nhóm rỗng như quy ước ở đầu bài.
-- In đủ 12 số, hỗ trợ tổng có hai chữ số, không có dấu cách cuối dòng.
-- Thoát bằng `INT 21h, AX=4C00h`.
+- Input checks for `'0'..'9'`; other characters are ignored, and only the first eight digits are stored.
+- Non-echoing input through `INT 21h, AH=07h`, keeping typed characters out of the result row.
+- Consistent output for empty groups, using the convention stated above.
+- All twelve decimal results, including two-digit sums, without a trailing space.
+- Program termination through `INT 21h, AX=4C00h`.
 
-Cách chạy trong EMU8086:
+To run in EMU8086:
 
-1. Mở `group_a_statistics.asm`, chọn **Compile and Emulate**.
-2. Chọn **Run**, chuyển vào cửa sổ màn hình giả lập.
-3. Gõ tám chữ số, ví dụ `12345678`. Không cần Enter; các phím vừa gõ không hiện lên.
-4. Khi nhập đủ, chương trình in một dòng và kết thúc.
+1. Open `group_a_statistics.asm` and select **Compile and Emulate**.
+2. Select **Run** and switch to the emulator screen.
+3. Type eight digits, for example `12345678`. No Enter is required; typed keys do not appear.
+4. After eight digits have been read, the program prints one row and terminates.
 
-Ví dụ đầu vào:
+Example input:
 
 ```text
 12345678
 ```
 
-Kết quả:
+Output:
 
 ```text
 2 9 6 3 3 13 7 1 3 14 8 2
 ```
 
-Giải thích: A = `{3,6}`, B = `{1,5,7}`, C = `{2,4,8}`.
+Here, A = `{3,6}`, B = `{1,5,7}`, and C = `{2,4,8}`.
 
-## d. Chương trình C tương ứng
+## d. Corresponding C Program
 
-[Code C hoàn chỉnh](group_a_statistics.c).
+[Complete C source](group_a_statistics.c).
 
-Giữ nguyên `ARR`, các biến thống kê, chỉ số `si` và thứ tự ba vòng duyệt A → B → C. Phép `DIV`/kiểm tra `AH` được biểu diễn bằng toán tử `%`; các nhánh cập nhật max/min được biểu diễn bằng `if`.
+The C version keeps `ARR`, all statistic variables, the index `si`, and the three scans in the order A → B → C. The `DIV` instruction and remainder checks in `AH` become expressions using `%`; maximum and minimum updates become `if` statements.
 
-Biên dịch và chạy, ví dụ với GCC:
+Compile and run, for example with GCC:
 
 ```sh
 gcc -std=c11 -Wall -Wextra -Werror -pedantic group_a_statistics.c -o statistics
 ./statistics
 ```
 
-Trên Windows chạy `statistics.exe`. Nhập cùng dữ liệu sẽ nhận cùng dòng kết quả. Có thể nhập liền tám chữ số hoặc có dấu cách; khi dùng terminal ở chế độ nhập dòng, nhấn Enter để gửi dữ liệu. Nếu hết đầu vào trước tám chữ số, bản C báo lỗi qua stderr và trả mã 1.
+On Windows, run `statistics.exe`. The same input produces the same result row. Digits may be entered consecutively or separated by spaces. In a line-buffered terminal, press Enter to submit the input. If EOF occurs before eight digits have been read, the C program reports an error on stderr and returns exit code 1.
 
-## Kết quả kiểm thử
+## Test Results
 
-Bảng dưới là các kết quả đã được kiểm tra ở cả bản C và mã máy x86 16 bit:
+The following results have been checked in both the C implementation and the 16-bit x86 machine code:
 
-| Đầu vào | A: số lượng, tổng, max, min | B: số lượng, tổng, max, min | C: số lượng, tổng, max, min |
+| Input | A: count, sum, max, min | B: count, sum, max, min | C: count, sum, max, min |
 |---|---|---|---|
 | `12345678` | `2 9 6 3` | `3 13 7 1` | `3 14 8 2` |
 | `03699912` | `6 36 9 0` | `1 1 1 1` | `1 2 2 2` |
@@ -211,14 +211,14 @@ Bảng dưới là các kết quả đã được kiểm tra ở cả bản C v�
 | `00000000` | `8 0 0 0` | `0 0 0 0` | `0 0 0 0` |
 | `24824824` | `0 0 0 0` | `0 0 0 0` | `8 34 8 2` |
 
-[Test có thể chạy lại](test_statistics.py): 120 bộ dữ liệu, gồm 100 bộ ngẫu nhiên có seed cố định, mọi chữ số lặp tám lần, phím không hợp lệ, dấu phân cách, nhóm rỗng và tổng hai chữ số. Kiểm tra cả 12 byte kết quả, mảng đầu vào, giới hạn ghi bộ nhớ, cân bằng ngăn xếp, đúng 11 dấu cách và xuống dòng cuối. Thêm ba trường hợp EOF cho C.
+[Reproducible test](test_statistics.py): 120 input cases, including 100 random arrays with a fixed seed, each digit repeated eight times, invalid characters, separators, empty groups, and two-digit sums. Checks cover all twelve result bytes, the input array, memory write bounds, stack balance, exactly eleven spaces, and the final newline. Three additional EOF cases cover the C program.
 
-Test biên dịch C bằng GCC với cảnh báo là lỗi; bản Assembly được chuyển **cú pháp toán hạng bộ nhớ** sang FASM rồi biên dịch thành mã máy 16 bit và chạy bằng Unicorn, mô phỏng ba dịch vụ DOS được dùng. Không thay đổi thuật toán khi chuyển cú pháp.
+The test compiles C with GCC and treats warnings as errors. For Assembly, it converts **memory-operand syntax** to FASM, assembles 16-bit machine code, and executes it with Unicorn while simulating the three DOS services used. The syntax conversion does not change the algorithm.
 
-Chạy lại test sau khi có GCC, FASM và gói Python `unicorn`:
+To rerun the test with GCC, FASM, and the Python `unicorn` package available:
 
 ```sh
 python test_statistics.py
 ```
 
-Có thể đặt `FASM` và `CC` thành đường dẫn trình biên dịch nếu chúng chưa có trong PATH. **Chưa kiểm chứng bằng giao diện hoặc trình biên dịch của EMU8086**; phần hướng dẫn ở câu c là thao tác để chạy lại tại đó.
+Set `FASM` and `CC` to the compiler paths if they are not on PATH. **The program has not been verified using the EMU8086 interface or compiler**; the steps in part c describe how to run it there.
