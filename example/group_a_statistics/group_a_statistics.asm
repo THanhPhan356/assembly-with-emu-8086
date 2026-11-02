@@ -1,4 +1,4 @@
-; Read eight digits and calculate statistics for groups A and B.
+; Read eight digits and calculate statistics for groups A, B, and C.
 ; shortcut: accepts digit keys only; add validation before allowing other input.
 ; shortcut: an empty group keeps max=0 and min=9; define empty-group output before printing.
 
@@ -15,6 +15,11 @@ soluong_B db 0
 tong_B db 0
 max_B db 0
 min_B db 0
+
+soluong_C db 0
+tong_C db 0
+max_C db 0
+min_C db 0
 
 start:
     mov si, 0
@@ -102,5 +107,46 @@ next_B:
     inc si
     cmp si, 8
     jb check_B
+
+; Group C: even values that are not divisible by 3.
+    mov si, 0
+    mov soluong_C, 0
+    mov tong_C, 0
+    mov max_C, 0
+    mov min_C, 9
+
+check_C:
+    mov al, ARR[si]
+    mov ah, 0
+    mov bl, 2
+    div bl
+    cmp ah, 0
+    jne next_C
+
+    mov al, ARR[si]
+    mov ah, 0
+    mov bl, 3
+    div bl
+    cmp ah, 0
+    je next_C
+
+    inc soluong_C
+    mov al, ARR[si]
+    add tong_C, al
+
+    cmp al, max_C
+    jbe max_done_C
+    mov max_C, al
+
+max_done_C:
+    cmp al, min_C
+    jge min_done_C
+    mov min_C, al
+
+min_done_C:
+next_C:
+    inc si
+    cmp si, 8
+    jb check_C
 
     ret
