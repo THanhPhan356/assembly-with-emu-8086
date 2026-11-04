@@ -12,3 +12,4 @@ Each example has its own folder, with a README containing the problem statement 
 | [20-digit Integer Addition](add_20digit/README.md) | Add two decimal integers of up to 20 digits using five 16-bit words and carry | C and Assembly |
 | [Groups A, B, and C Statistics](group_a_statistics/README.md) | Read eight digits, compute and print all three groups; includes flowchart, variable descriptions, and tests | C and Assembly |
 | [Midterm Exercise 2: Sum and Division](sum_divide_32bit/README.md) | Study EXE setup, data labels, pointers, carry propagation, DIV widths, and the original program's two overflow defects | Assembly and diagnostic test |
+| [Average of Nonzero Signed Bytes](nonzero_average/README.md) | Compute a signed integer average in AX with a direct array loop, zero-count handling and machine-code tests | Assembly |
