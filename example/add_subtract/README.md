@@ -173,3 +173,11 @@ For iteration `k = 0, 1, ..., 7`, the printed bit is `floor(14 / 2^(7-k)) mod 2`
 ![Algorithm flowchart with True and False branches](images/flowchart.svg)
 
 *Ovals: start/end. Rectangles: assignments and calculations. Diamonds: conditions. Parallelograms: input/output. [PNG version](images/flowchart.png).*
+
+## EXE version: binary output
+
+[2_sample_exe.asm](2_sample_exe.asm) is the equivalent DOS `.EXE` source. Open it in emu8086, select **Compile**, save the output as `.exe`, then select **Emulate**.
+
+It uses `.MODEL SMALL`, a 256-byte `.STACK`, `MAIN PROC` and `END MAIN` instead of `ORG 100h`. The program exits with `INT 21h / AH=4Ch`. The output remains `00001110b`, followed by a key wait. The register addresses and initial state in the COM trace above do not apply to this EXE.
+
+Validation: a FASM-compatible translation was assembled as an MZ EXE and executed with Unicorn, including DOS-style startup and termination. Checked the exact binary output, keyboard-wait service, and balanced stack.
