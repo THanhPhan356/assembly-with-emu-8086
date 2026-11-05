@@ -63,3 +63,11 @@ For the values above, `sum = 00000000h` and `carry = 1`. The full result is `100
 | 4294967295 | 4294967295 | 4294967294 | 1 |
 
 In the Assembly program, change the two words of `a` and `b` to try other inputs.
+
+## EXE version: 32-bit addition
+
+[add_32bit_exe.asm](add_32bit_exe.asm) is the equivalent DOS `.EXE` source. Open it in emu8086, select **Compile**, save the output as `.exe`, then select **Emulate**.
+
+It uses `.MODEL SMALL`, a 256-byte `.STACK`, `MAIN PROC` and `END MAIN` instead of `ORG 100h`. Data is in `.DATA`; `mov ax, @DATA` / `mov ds, ax` initializes DS explicitly. The program exits with `INT 21h / AH=4Ch`. Inspect `sum = 00000000h` and `carry = 1`. Inspect `DX:AX` before the exit instruction changes AH.
+
+Validation: a FASM-compatible translation was assembled as an MZ EXE and executed with Unicorn, including DOS-style startup and termination. Checked zero, low-word carry, and the 33rd carry bit.
