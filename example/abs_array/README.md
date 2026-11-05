@@ -103,3 +103,11 @@ Both methods check the sign before converting. Instruction count alone is not a 
 It uses `.MODEL SMALL`, a 256-byte `.STACK`, `MAIN PROC` and `END MAIN` instead of `ORG 100h`. Data is in `.DATA`; `mov ax, @DATA` / `mov ds, ax` initializes DS explicitly. The program exits with `INT 21h / AH=4Ch`. Inspect the unsigned word magnitudes in `B`; the input array is unchanged.
 
 Validation: a FASM-compatible translation was assembled as an MZ EXE and executed with Unicorn, including DOS-style startup and termination. Checked the supplied array, signed endpoints, and zero count.
+
+## EXE version: NOT + INC
+
+[abs_array_bits_exe.asm](abs_array_bits_exe.asm) is the equivalent DOS `.EXE` source. Open it in emu8086, select **Compile**, save the output as `.exe`, then select **Emulate**.
+
+It uses `.MODEL SMALL`, a 256-byte `.STACK`, `MAIN PROC` and `END MAIN` instead of `ORG 100h`. Data is in `.DATA`; `mov ax, @DATA` / `mov ds, ax` initializes DS explicitly. The program exits with `INT 21h / AH=4Ch`. Inspect the unsigned word magnitudes in `B`; the input array is unchanged.
+
+Validation: a FASM-compatible translation was assembled as an MZ EXE and executed with Unicorn, including DOS-style startup and termination. Checked the supplied array, signed endpoints, and zero count.
