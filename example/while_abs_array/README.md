@@ -53,3 +53,11 @@ B = { 5, 0, 7,  12, 3}
 ```
 
 Edit A and N together to try other inputs. The magnitude of -128 is 128 (`80h`), which fits unsigned B but not a signed 8-bit value.
+
+## EXE version: while-loop absolute values
+
+[while_abs_array_exe.asm](while_abs_array_exe.asm) is the equivalent DOS `.EXE` source. Open it in emu8086, select **Compile**, save the output as `.exe`, then select **Emulate**.
+
+It uses `.MODEL SMALL`, a 256-byte `.STACK`, `MAIN PROC` and `END MAIN` instead of `ORG 100h`. Data is in `.DATA`; `mov ax, @DATA` / `mov ds, ax` initializes DS explicitly. The program exits with `INT 21h / AH=4Ch`. Inspect the unsigned byte magnitudes in `B`: `5, 0, 7, 12, 3`. The input array is unchanged.
+
+Validation: a FASM-compatible translation was assembled as an MZ EXE and executed with Unicorn, including DOS-style startup and termination. Checked the supplied array, signed-byte endpoints, and zero count.
