@@ -72,3 +72,11 @@ Open `add_20digit.asm` in emu8086, select **Emulate**, and step through the inst
 | 99999999999999999999 | 99999999999999999999 | 199999999999999999998 | FFFE C61F BC5A D78E 000A |
 
 To try another case, convert each input into five 16-bit words and update the initializers in both files. Plain decimal digits inside quotes would create ASCII data and cannot be used by this binary addition loop.
+
+## EXE version: 20-digit addition
+
+[add_20digit_exe.asm](add_20digit_exe.asm) is the equivalent DOS `.EXE` source. Open it in emu8086, select **Compile**, save the output as `.exe`, then select **Emulate**.
+
+It uses `.MODEL SMALL`, a 256-byte `.STACK`, `MAIN PROC` and `END MAIN` instead of `ORG 100h`. Data is in `.DATA`; `mov ax, @DATA` / `mov ds, ax` initializes DS explicitly. The program exits with `INT 21h / AH=4Ch`. Inspect `c`: `89BC D045 F6C5 05F9 0006` (low word first).
+
+Validation: a FASM-compatible translation was assembled as an MZ EXE and executed with Unicorn, including DOS-style startup and termination. Checked the supplied operands, zero, carry across words, and two maximum 20-digit inputs.
