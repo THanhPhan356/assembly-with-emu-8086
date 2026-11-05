@@ -134,3 +134,11 @@ On Windows, run `statistics.exe`. A line-buffered terminal may require Enter aft
 | `88888888` | `0 0 0 0` | `0 0 0 0` | `8 64 8 8` |
 | `00000000` | `8 0 0 0` | `0 0 0 0` | `0 0 0 0` |
 | `24824824` | `0 0 0 0` | `0 0 0 0` | `8 34 8 2` |
+
+## EXE version: groups A, B, and C
+
+[group_a_statistics_exe.asm](group_a_statistics_exe.asm) is the equivalent DOS `.EXE` source. Open it in emu8086, select **Compile**, save the output as `.exe`, then select **Emulate**.
+
+It uses `.MODEL SMALL`, a 256-byte `.STACK`, `MAIN PROC` and `END MAIN` instead of `ORG 100h`. Data is in `.DATA`; `mov ax, @DATA` / `mov ds, ax` initializes DS explicitly. The program exits with `INT 21h / AH=4Ch`. Input filtering, empty-group handling, the twelve printed statistics and the `print_u8` subroutine are unchanged.
+
+Validation: a FASM-compatible translation was assembled as an MZ EXE and executed with Unicorn, including DOS-style startup and termination. Checked 107 inputs, including rejected characters, empty groups, trailing digits, exact output, memory bounds, and balanced stack.
