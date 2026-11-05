@@ -64,3 +64,11 @@ python verify_nonzero_average.py
 ```
 
 The check covers the supplied array, negative values, signed-byte endpoints, positive and negative fractional averages, zero count, and both signed 16-bit sum endpoints. It inspects AX, the sum, the nonzero count and the unchanged input array before the final RET. It does not validate the emu8086 application or DOS termination.
+
+## EXE version: nonzero average
+
+[nonzero_average_exe.asm](nonzero_average_exe.asm) is the equivalent DOS `.EXE` source. Open it in emu8086, select **Compile**, save the output as `.exe`, then select **Emulate**.
+
+It uses `.MODEL SMALL`, a 256-byte `.STACK`, `MAIN PROC` and `END MAIN` instead of `ORG 100h`. Data is in `.DATA`; `mov ax, @DATA` / `mov ds, ax` initializes DS explicitly. The program exits with `INT 21h / AH=4Ch`. Stop at `ket_thuc` **before** `mov ah, 4Ch` to inspect the signed average in AX (`0001h` for the supplied array). Selecting the DOS exit function changes AH. The signed 16-bit sum limit still applies.
+
+Validation: a FASM-compatible translation was assembled as an MZ EXE and executed with Unicorn, including DOS-style startup and termination. Checked nine cases, including zero count, signed-byte endpoints, fractional averages, and signed 16-bit sum endpoints.
