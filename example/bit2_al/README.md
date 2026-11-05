@@ -29,3 +29,11 @@ Starting with `AL = 00001000b`:
 - After `XOR`: AL = `00001100b`.
 
 The operations run sequentially on the same AL value. The program does not print output.
+
+## EXE version: bit 2 operations
+
+[bit2_al_exe.asm](bit2_al_exe.asm) is the equivalent DOS `.EXE` source. Open it in emu8086, select **Compile**, save the output as `.exe`, then select **Emulate**.
+
+It uses `.MODEL SMALL`, a 256-byte `.STACK`, `MAIN PROC` and `END MAIN` instead of `ORG 100h`. The program exits with `INT 21h / AH=4Ch`. The final result remains `AL = 00001100b`. No data segment initialization is needed because this program accesses only registers.
+
+Validation: a FASM-compatible translation was assembled as an MZ EXE and executed with Unicorn, including DOS-style startup and termination. Checked the final AL value.
