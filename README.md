@@ -14,11 +14,14 @@ I will add notes, exercises, and projects as I learn.
 
 [Read note_04 online](https://thanhphan356.github.io/assembly-with-emu-8086/note_04.html) — connect x86 register evolution with protected-mode addressing and worked revision problems.
 
+[Read note_05 online](https://thanhphan356.github.io/assembly-with-emu-8086/note_05.html) — build complete COM/EXE programs and practise DOS character input, buffered lines, reversal and decimal output.
+
 The [docs folder](docs/README.md) contains study and revision documents.
 
 - [note_01 — 8086 fundamentals](docs/note_01.html): both parts of session 1, with 14 original slide illustrations, architecture, addressing, worked MOV encodings, exercises and calculators.
 - [note_02 — Data transfer, stacks and arithmetic](docs/note_02.html): both parts of session 2, with 10 original slide illustrations, pointer and stack traces, ADD and all six status flags, 4 practice programs and a revision quiz.
 - [note_03 — Arithmetic and control flow](docs/note_03.html): session 3, with 12 original slide illustrations, carry and borrow, multiplication/division, masks and shifts, signed/unsigned conditions, loops, calls and interrupt frames, 5 practice programs and 2 interactive tools.
 - [note_04 — Protected mode and revision](https://thanhphan356.github.io/assembly-with-emu-8086/note_04.html): session 4, with 12 original slide illustrations, selectors, descriptors, segment bounds, linear versus physical addresses, 18 worked exercises, 5 practice programs and 2 interactive tools.
+- [note_05 — Assembly programs and DOS I/O](https://thanhphan356.github.io/assembly-with-emu-8086/note_05.html): session 5, with 12 original slide illustrations, declarations and arrays, COM/EXE startup, branches and loops, 5 complete applications, 2 Hello templates, 18 worked exercises and 2 interactive tools.
 
 Download a note's HTML file and open it in a browser. Each note works offline and needs no additional files. Sources and validation limits are listed inside each note; the programs still need a walkthrough in the emu8086 application.
