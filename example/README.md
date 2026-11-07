@@ -13,3 +13,4 @@ Each example has its own folder, with a README containing the problem statement 
 | [Groups A, B, and C Statistics](group_a_statistics/README.md) | Read eight digits, compute and print all three groups; includes flowchart, variable descriptions, and tests | C and Assembly |
 | [Midterm Exercise 2: Sum and Division](sum_divide_32bit/README.md) | Study EXE setup, data labels, pointers, carry propagation, DIV widths, and the original program's two overflow defects | Assembly and diagnostic test |
 | [Average of Nonzero Signed Bytes](nonzero_average/README.md) | Compute a signed integer average in AX with a direct array loop, zero-count handling and machine-code tests | Assembly |
+| [Positions of the Two Largest Signed Words](two_largest_positions/README.md) | Find two element positions with simple separate scans; includes signed and duplicate-value machine-code tests | Assembly |
