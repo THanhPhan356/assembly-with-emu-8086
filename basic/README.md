@@ -7,6 +7,7 @@ This folder will contain step-by-step notes and examples for basic 8086 assembly
 - [Reading a keyboard character with INT 21h](int_21h.md).
 - [Unsigned division with DIV](div.md).
 - [Signed and unsigned conditional jumps](jumps.md).
+- [Screen-output demo of JL versus JB](jumps_demo.asm).
 - [Reading eight digits into an array](input_8_digits.asm).
 
 Planned topics:

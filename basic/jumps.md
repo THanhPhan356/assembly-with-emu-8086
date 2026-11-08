@@ -2,8 +2,8 @@
 
 Remember the letters:
 
-- **A / B = Above / Below = unsigned (khong dau).**
-- **G / L = Greater / Less = signed (co dau).**
+- **A / B = Above / Below = unsigned.**
+- **G / L = Greater / Less = signed.**
 - **E = Equal.**
 
 ## Comparing Two Values
@@ -44,4 +44,32 @@ Consider each jump independently, immediately after that comparison:
 
 For 16-bit operands, when both values are in 0-32767, signed and unsigned ordering agree. When the high bit is set, they can differ: the same 16 bits represent either 32768-65535 unsigned or -32768 to -1 signed.
 
-These are reference snippets; they have not been run in emu8086.
+## Runnable Demo
+
+Open [jumps_demo.asm](jumps_demo.asm) in emu8086, choose **Compile**, then **Emulate**, then **Run**. Each result is selected by an actual `JL` or `JB` instruction; the messages are not hard-coded outcomes.
+
+The program reloads the operands for each case and compares them again after printing, because DOS output may change flags. The print helper preserves the operand registers.
+
+Expected output:
+
+```text
+AX = FFFFh (-1 signed / 65535 unsigned), BX = 1
+  JL (signed less):    TAKEN
+  JB (unsigned below): NOT TAKEN
+
+AX = 2, BX = 3
+  JL (signed less):    TAKEN
+  JB (unsigned below): TAKEN
+
+AX = 3, BX = 2
+  JL (signed less):    NOT TAKEN
+  JB (unsigned below): NOT TAKEN
+
+AX = 3, BX = 3
+  JL (signed less):    NOT TAKEN
+  JB (unsigned below): NOT TAKEN
+```
+
+When stepping through the demo, watch AX and BX at each `CMP`, then check whether execution enters the `signed_less` or `unsigned_below` label.
+
+The source assembles with the bundled FASM. Direct execution in the emu8086 application has not been verified.
