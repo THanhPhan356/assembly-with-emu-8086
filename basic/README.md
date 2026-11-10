@@ -9,6 +9,7 @@ This folder will contain step-by-step notes and examples for basic 8086 assembly
 - [Signed and unsigned conditional jumps](jumps.md).
 - [Screen-output demo of JL versus JB](jumps_demo.asm).
 - [Reading eight digits into an array](input_8_digits.asm).
+- [Basic WHILE...DO loops](while_do.md), with a [sum 1 through 5 demo](while_do.asm).
 
 Planned topics:
 
