@@ -61,3 +61,17 @@ e) When is it necessary to pass arguments through the stack?
 ## Source
 
 English translation of Exercise 3 from *VXL_BaiTap Chuong2-3_CodeC.pdf* (Microprocessor Engineering Exercises, Assignment No. 3).
+
+## Alternative for Question (d): Pass the Argument in AX
+
+[count_bits_register_exe.asm](count_bits_register_exe.asm) is a complete DOS EXE example using a register argument. It demonstrates an alternative to the stack argument required by the original assignment.
+
+- Caller: `mov ax, N`, then `call Count`.
+- Callee: reads its input directly from AX and returns the set-bit count in AX.
+- SI is saved and restored. Other general-purpose registers are unchanged; flags may change.
+- There is no stack argument or BP frame. CALL/RET and saving SI still use the stack.
+- SHR counts the full 16-bit bit pattern, including values with bit 15 set.
+
+Open the file in emu8086, compile as an EXE, and step through it. With `N DW 13`, AX is 3 immediately after `call Count`. Inspect AX before `mov ax, 4C00h`, which overwrites AX to exit DOS. The program does not print output.
+
+[verify_count_bits_register.py](verify_count_bits_register.py) assembles the actual Count procedure with FASM and executes a small 16-bit harness using Unicorn. It checks zero, 13, bit-pattern boundaries, every single-bit input, and 256 deterministic random inputs, including balanced SP and preserved registers. Set `FASM` to the assembler executable if it is not on PATH, install `unicorn`, then run `python verify_count_bits_register.py`. This checks the procedure, not the emu8086 UI or EXE loader.
