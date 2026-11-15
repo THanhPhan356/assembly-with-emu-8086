@@ -17,3 +17,4 @@ Each example has its own folder, with a README containing the problem statement 
 | [Exercise 3: Count Set Bits](count_bits/README.md) | Translate a C bit-counting function to 8086 assembly using a stack argument; includes five follow-up questions | Problem statement |
 | [Exercise 3 (Variant): Count Odd Array Elements](count_odd/README.md) | Write a complete EXE that passes an array offset and length through the stack and returns the odd-element count in AX | Problem statement |
 | [Sort Signed 16-bit Integers](sort_signed_words/README.md) | Sort a word array in place with two nested loops, signed comparisons, and direct swaps | Assembly and execution test |
+| [Reverse a String Using the Stack](reverse_string/README.md) | Reverse a counted ASCII string in place with two loops and PUSH/POP | Assembly and execution test |
