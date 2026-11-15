@@ -15,3 +15,4 @@ Each example has its own folder, with a README containing the problem statement 
 | [Average of Nonzero Signed Bytes](nonzero_average/README.md) | Compute a signed integer average in AX with a direct array loop, zero-count handling and machine-code tests | Assembly |
 | [Positions of the Two Largest Signed Words](two_largest_positions/README.md) | Find two element positions with simple separate scans; includes signed and duplicate-value machine-code tests | Assembly |
 | [Exercise 3: Count Set Bits](count_bits/README.md) | Translate a C bit-counting function to 8086 assembly using a stack argument; includes five follow-up questions | Problem statement |
+| [Exercise 3 (Variant): Count Odd Array Elements](count_odd/README.md) | Write a complete EXE that passes an array offset and length through the stack and returns the odd-element count in AX | Problem statement |
