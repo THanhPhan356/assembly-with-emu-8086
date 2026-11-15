@@ -11,7 +11,7 @@ This folder will contain step-by-step notes and examples for basic 8086 assembly
 - [Reading eight digits into an array](input_8_digits.asm).
 - [Basic WHILE...DO loops](while_do.md), with a [sum 1 through 5 demo](while_do.asm).
 - [LEA and OFFSET: addresses versus values](lea_offset.md).
-- [Three basic ways to use the stack](stack.md): PUSH/POP, BP-based access, CALL/RET, and SS versus DS when reading stack arguments and arrays.
+- [Three basic ways to use the stack](stack.md): PUSH/POP, BP-based access, CALL/RET, SS versus DS when reading stack arguments and arrays, and reversing byte strings with S[SI].
 
 Planned topics:
 
