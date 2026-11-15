@@ -78,6 +78,66 @@ The caller's original variable is unchanged when its value was pushed: the argum
 
 The +4 offset depends on this exact frame and a near CALL. Far calls or extra saves before establishing BP change the layout.
 
+## SS, DS, and Arrays
+
+SS is the **Stack Segment register**. In 8086 real mode, a segment register and an offset together identify a memory location:
+
+`physical address = segment * 16 + offset`
+
+SS has a concrete 16-bit value. In a normal DOS EXE, the loader initializes SS:SP using the executable's stack information, and your procedure usually leaves SS unchanged. Its value is not a universal constant across programs or runs. DS must be initialized separately to access the program's data.
+
+### Choosing the Segment for a Memory Access
+
+| Memory operand | Segment used |
+|---|---|
+| `[bx]`, `[si]`, `[di]` | DS by default |
+| `[bp]`, `[bp+4]` | SS by default |
+| `ss:[bx+4]` | SS explicitly |
+
+`SS:` is a **segment override**. It selects the segment for that memory access; it does not change SS or SP.
+
+```asm
+mov dx, ss:[bx+4]    ; Read a word from SS at offset BX + 4.
+```
+
+MOV reads a copy without removing anything from the stack. BX must already hold the intended offset; adding SS: does not turn an arbitrary value into a valid stack address.
+
+If an array actually resides in the stack segment, access its elements using SS and their offsets. BP selects SS automatically; BX, SI, and DI require an explicit SS override for such accesses.
+
+### A Data Array Whose Address Is Passed on the Stack
+
+Suppose `ARR DW 2, 5, 8, 3` is declared in .DATA and DS has been initialized:
+
+```asm
+lea bx, ARR          ; BX receives the offset of ARR, not its first element.
+mov dx, [bx]        ; Read DS:BX: DX = 2.
+push bx             ; Push a copy of the offset; ARR stays in .DATA.
+pop bx              ; Balance this standalone example's PUSH.
+```
+
+Pushing the offset does not move the array into the stack. In CountOdd, read the offset argument from SS, then use it to read the array elements from DS.
+
+Loading the first element into AX gives AX the value 2, not an address. AX can hold an offset, but original 8086 addressing does not support `[ax]` or `[sp]`; use a legal address register such as BX or SI.
+
+### Reading the Arguments Without BP
+
+Assume the caller executes PUSH N, PUSH of ARR's offset, and a **near CALL**, in that order. At the start of the callee:
+
+```asm
+push bx
+mov bx, sp          ; Keep a stable copy of SP in BX.
+mov si, ss:[bx+4]   ; ARR's offset, stored on the stack.
+mov cx, ss:[bx+6]   ; N, stored on the stack.
+```
+
+Here SS:[BX] holds saved BX and SS:[BX+2] holds the return IP. Later pushes do not change BX or these offsets. Read array elements through `[si]`, which selects DS by default. Undo any later pushes, restore BX with POP BX, and leave the return IP at the top before RET. Preserve SI and CX too if required by your register agreement.
+
+### Do Not Change SS Just to Read Stack Data
+
+`mov ss, 1` is invalid: MOV cannot load an immediate constant directly into a segment register. `mov ss, ax` is a valid instruction, but it changes the stack segment while leaving SP unchanged. A new segment with an unrelated SP can make PUSH, POP, CALL, or RET access the wrong memory. You do not need to change SS in this exercise.
+
+Self-check: if SS = 2000h and BX = 0100h, `ss:[bx+4]` accesses physical address 20104h. The instruction `mov dx, ss:[bx+4]` leaves SS, BX, and SP unchanged.
+
 ## 3. Use CALL and RET for Procedures
 
 A near CALL pushes the IP of the instruction **after CALL**, then transfers execution to the procedure. A matching near RET pops that IP and resumes the caller.
