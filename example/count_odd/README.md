@@ -59,6 +59,16 @@ d) When moving from `A[i]` to `A[i+1]`, by how many bytes must the address incre
 
 e) After `CALL CountOdd`, can `POP AX` be used to remove an argument from the stack while keeping the result in AX?
 
+## COM Template and Solution
+
+[count_odd.asm](count_odd.asm) is the complete COM version of this exercise. Use `ORG 100h`, jump over N and A, and keep code and data in one segment. The program sets DS to CS and uses the stack supplied by DOS; it needs no `.MODEL`, `.STACK`, `.DATA`, or `.CODE` directives.
+
+The caller pushes the offset of A, then N. After saving BP, CountOdd reads N at `[BP+4]` and the offset at `[BP+6]`. It returns the count in AX and preserves BP, CX, and SI. `ADD SP, 4` removes the arguments while keeping AX. A near RET returns through the initial zero word on the COM stack to the PSP's DOS exit instruction.
+
+Open the source in emu8086, compile as COM, and step to the RET after `ADD SP, 4`. The supplied array gives AX = 2 and restores SP to its initial value. N = 0 returns AX = 0. Negative odd values count too. Keep `0 <= N <=` the declared array length, and ensure the program, array, and stack fit in the shared 64 KiB segment.
+
+[verify_com_templates.py](../verify_com_templates.py) assembles and executes all three COM versions with FASM and Unicorn, including empty input and signed boundary values.
+
 ## Source
 
 English translation of *Bai_tap_8086_CountOdd.pdf*, a Microprocessor Engineering practice exercise on arrays and the stack.

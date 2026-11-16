@@ -69,6 +69,14 @@ The program changes the array in memory and does not print it. The exit instruct
 
 When changing the input, update N to match the number of DW elements. Keep 1 <= N <= 32767 and ensure the data segment fits within 64 KiB, so the byte limit and array addresses do not wrap.
 
+## COM Version
+
+[sort_signed_words.asm](sort_signed_words.asm) contains the complete COM template: `ORG 100h`, a jump over the data, DS set to CS, and a near RET that exits through the PSP. Code, data, and the DOS-provided stack share one segment.
+
+Open this source in emu8086 and compile as COM. Inspect ARR at sort_done; the sample becomes `[-8, -3, 0, 7, 7, 12]`. The COM version uses the same signed exchange sort. Keep N equal to the declared number of words, and keep the code, array, and DOS stack within the shared 64 KiB segment without overlap. This is a stricter size limit than a separate EXE data segment.
+
+[verify_com_templates.py](../verify_com_templates.py) checks the COM machine code, results, memory bounds, segment setup, stack balance, and DOS exit with FASM and Unicorn.
+
 ## Verification
 
 [verify_sort_signed_words.py](verify_sort_signed_words.py) assembles the source's instruction sequence with Keystone and runs it in 16-bit Unicorn. It checks the resulting array, unchanged N, DOS termination, and unchanged memory surrounding the array.

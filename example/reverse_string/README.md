@@ -38,6 +38,14 @@ N must be positive and equal the declared byte length of S. Update both declarat
 
 This learning version assumes valid fixed input. N = 0 is unsupported: entering a LOOP body with CX = 0 would wrap the counter instead of skipping the loop.
 
+## COM Version
+
+[reverse_string.asm](reverse_string.asm) contains the complete COM template: `ORG 100h`, a jump over the data, DS set to CS, and a near RET that exits through the PSP. Code, data, and the DOS-provided stack share one segment.
+
+Open this source in emu8086 and compile as COM. Inspect S before the final RET; the sample becomes `olleh`. The COM version uses the same PUSH/POP loops. N must stay positive and equal the declared byte length of S. DOS supplies the stack; leave at least 2*N bytes plus headroom below its initial SP without overlapping the loaded program or data. The five-character example uses ten bytes during reversal.
+
+[verify_com_templates.py](../verify_com_templates.py) checks the COM machine code, results, memory bounds, segment setup, stack balance, and DOS exit with FASM and Unicorn.
+
 ## Verification
 
 [verify_reverse_string.py](verify_reverse_string.py) uses Keystone and Unicorn to execute the source instruction sequence with resolved data addresses. It checks reversed bytes, unchanged N and surrounding memory, DS initialization, stack depth and balance, and DOS exit. Cases include the supplied word, one and two characters, repeated characters, a palindrome, spaces, an embedded zero byte, and a 100-byte input.
